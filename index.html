@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Svelte + TS</title>
+  </head>
+  <body>
+    <div id="js-canvas-editor"></div>
+    <script>
+      const PRODUCT_VISUAL_EDITOR_TEMPLATE = {
+        elements: [
+          {
+            type: 'img',
+            width: 300,
+            height: 300,
+            x: 20,
+            y: 20,
+            zoom: 1,
+            index: 1,
+            artboard: 'e6f712a3-57dd-48fc-af9c-762f45d05a0a',
+            src: 'https://dummyimage.com/600x400',
+          },
+          {
+            type: 'text',
+            width: 100,
+            height: 400,
+            x: 20,
+            y: 20,
+            zoom: 1,
+            artboard: 'e6f712a3-57dd-48fc-af9c-762f45d05a0a',
+            content: 'Party Hard',
+          },
+        ],
+        artboards: [{
+          width: 1200,
+          height: 1200,
+          id: 'e6f712a3-57dd-48fc-af9c-762f45d05a0a',
+        }],
+        scale: 1,
+      };
+    </script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
