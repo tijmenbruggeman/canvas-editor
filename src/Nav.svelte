@@ -6,17 +6,26 @@ import { toolbar } from './stores';
     }
 </script>
 <nav class="nav">
-    <ul>
-        <li>
-            <button on:click={() => setToolbar(ToolbarType.Templates)}>Templates</button>
-            <button on:click={() => setToolbar(ToolbarType.Files)}>Files</button>
-            <button on:click={() => setToolbar(ToolbarType.Edit)}>Edit</button>
-        </li>
-    </ul>
+    <button on:click={() => setToolbar(ToolbarType.Templates)}>Templates</button>
+    <button on:click={() => setToolbar(ToolbarType.Files)}>Files</button>
+    <button on:click={() => setToolbar(ToolbarType.Edit)}>Edit</button>
 </nav>
 <style>
     
   .nav {
       grid-area: nav;
+      display: flex;
+      flex-direction: column;
+  }
+  .nav button {
+      width: 100%;
+      display: block;
+      height: 50px;
+      border: none;
+      cursor: pointer;
+      min-width: 118px;
+  }
+  .nav button:hover {
+      background-color: var(--color-bg-0);
   }
 </style>

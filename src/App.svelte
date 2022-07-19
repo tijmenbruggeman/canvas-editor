@@ -21,6 +21,9 @@ if (template) {
   :root {
     --color-artboard: #ffffff;
     --color-workspace: #edf0f2;
+
+    --color-bg-0: #f6f9fc;
+    --color-bg-1: #edf0f2;
   }
   .editor {
     height: 100%;
