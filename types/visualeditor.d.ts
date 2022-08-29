@@ -7,6 +7,7 @@ type Template = {
 declare const PRODUCT_VISUAL_EDITOR_TEMPLATE: Template | undefined;
 
 type DesignElement = {
+  id: string;
   type: ElementType;
   width: number;
   height: number;

@@ -13,6 +13,18 @@
     function hideSelectFrame() {
         showSelectionFrame = false;
     }
+    function selectElement(element: DesignElement): void {
+        const currentSelection = $selection;
+        const elementIndex = currentSelection.indexOf(element.id);
+        if (elementIndex >= 0) {
+            currentSelection.splice(elementIndex, 1);
+            selection.set(currentSelection);
+            return;
+        }
+
+        selection.set([element.id]);
+        return;
+    }
     
     const styles = {
         transform: `translate(${element.x}px, ${element.y}px)`,
@@ -21,11 +33,6 @@
     }
     
     $: cssStyle = objectToStyle(styles);
-
-    function selectElement(element: DesignElement) {
-        selection.set([element]);
-
-    }
     </script>
     <style>
         .element-wrapper {

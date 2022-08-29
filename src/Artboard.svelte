@@ -1,6 +1,7 @@
 <script lang="ts">
   import { elements } from './stores';
   import ElementBase from './ElementBase.svelte';
+import SelectedFrame from './SelectedFrame.svelte';
   export let artboard_settings: ArtboardSettings;
 
   let design_elements: Array<DesignElement> = [];
@@ -11,6 +12,7 @@
 </script>
 
 <div class="artboard" style="width: {artboard_settings.width}px; height: {artboard_settings.height}px;">
+  <SelectedFrame />
   {#each design_elements as design_element}
     <ElementBase element="{design_element}" />
   {/each}

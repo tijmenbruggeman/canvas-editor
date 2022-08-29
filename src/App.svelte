@@ -1,4 +1,5 @@
 <script lang="ts">
+import { v4 } from 'uuid';
 import { artboards, elements } from "./stores";
 
 import EditorMenu from "./EditorMenu.svelte";
@@ -8,7 +9,11 @@ export let template: Template;
 
 if (template) {
   artboards.set(template.artboards);
-  elements.set(template.elements);
+  const elementWithIds = template.elements.map((el) => ({
+    ...el,
+    id: v4(),
+  }));
+  elements.set(elementWithIds);
 }
 
 </script>
@@ -21,6 +26,8 @@ if (template) {
   :root {
     --color-artboard: #ffffff;
     --color-workspace: #edf0f2;
+    --color-handle-bg: #ffffff;
+    --color-handle-border: #edf0f2;
 
     --color-bg-0: #f6f9fc;
     --color-bg-1: #edf0f2;
