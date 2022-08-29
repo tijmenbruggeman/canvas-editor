@@ -44,6 +44,7 @@
             height: 100%;
             width: 100%;
             position: absolute;
+            transform: translate(-2px, -2px);
         }
     </style>
 <div class="element-wrapper" style={cssStyle} on:mouseenter={showSelectFrame} on:mouseleave={hideSelectFrame} on:click={() => selectElement(element)}>
