@@ -27,7 +27,6 @@
     isDragging = false;
     dragStartY = 0;
     dragStartX = 0;
-    // TODO: commit action
   }
 
 </script>

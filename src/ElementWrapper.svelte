@@ -1,6 +1,7 @@
 <script lang="ts">
     import { objectToStyle } from "./utils/objectToStyle";
     import { selection } from "./storeWorkspace";
+  import { commitAction } from "./storeEdits";
     
     export let element: DesignElement;
     let isDragging = false;
@@ -52,6 +53,14 @@
 
     function onDragEnd(e) {
         isDragging = false;
+        commitAction({
+            type: 'move',
+            id: element.id,
+            attr: {
+                x: element.x + moveX,
+                y: element.y + moveY,
+            }
+        });
         dragStartY = 0;
         dragStartX = 0;
         moveX = 0;
