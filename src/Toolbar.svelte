@@ -1,5 +1,5 @@
 <script>
-import { toolbar } from "./stores";
+import { toolbar } from "./storeWorkspace";
 
 import ToolbarEdit from "./ToolbarEdit.svelte";
 import ToolbarFiles from "./ToolbarFiles.svelte";

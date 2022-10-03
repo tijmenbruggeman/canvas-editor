@@ -1,20 +1,41 @@
 <script lang="ts">
-  import { elements } from './stores';
+  import { selection } from './storeWorkspace';
+  import { elements } from './storeEdits';
   import ElementBase from './ElementBase.svelte';
-import SelectedFrame from './SelectedFrame.svelte';
-  export let artboard_settings: ArtboardSettings;
+  import SelectedFrame from './SelectedFrame.svelte';
+  export let artboardSettings: ArtboardSettings;
 
-  let design_elements: Array<DesignElement> = [];
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
 
-  elements.subscribe((value) => {
-    design_elements = value;
-  });
+  function onDragStart(e) {
+    if ($selection.length === 0) return;
+    dragStartX = e.pageX;
+    dragStartY = e.pageY
+    isDragging = true;
+  }
+
+  function onMouseMove(e) {
+    if (!isDragging) return;
+    const moveX = dragStartX - e.pageX;
+    const moveY = dragStartY - e.pageY;
+    
+  }
+
+  function onDragEnd(e) {
+    isDragging = false;
+    dragStartY = 0;
+    dragStartX = 0;
+    // TODO: commit action
+  }
+
 </script>
 
-<div class="artboard" style="width: {artboard_settings.width}px; height: {artboard_settings.height}px;">
+<div class="artboard" on:mousedown={onDragStart} on:mouseup={onDragEnd} on:mouseleave={onDragEnd} on:mousemove={onMouseMove} style="width: {artboardSettings.width}px; height: {artboardSettings.height}px;">
   <SelectedFrame />
-  {#each design_elements as design_element}
-    <ElementBase element="{design_element}" />
+  {#each $elements as element}
+    <ElementBase element="{element}" />
   {/each}
 </div>
 

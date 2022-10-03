@@ -1,6 +1,6 @@
 <script>
     import { ToolbarType } from '../src/ToolbarType';
-import { toolbar } from './stores';
+    import { toolbar } from './storeWorkspace';
     function setToolbar(toolbarType) {
         toolbar.set(toolbarType);
     }

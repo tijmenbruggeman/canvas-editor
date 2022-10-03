@@ -1,8 +1,13 @@
 <script lang="ts">
     import { objectToStyle } from "./utils/objectToStyle";
-    import { selection } from "./stores";
+    import { selection } from "./storeWorkspace";
     
     export let element: DesignElement;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let moveX = 0;
+    let moveY = 0;
     
     $: showSelectionFrame = true;
 
@@ -13,21 +18,50 @@
     function hideSelectFrame() {
         showSelectionFrame = false;
     }
-    function selectElement(element: DesignElement): void {
+    function selectElement(event, element: DesignElement): void {
         const currentSelection = $selection;
-        const elementIndex = currentSelection.indexOf(element.id);
+        const elementIndex = currentSelection.findIndex(({ id }) => id === element.id);
         if (elementIndex >= 0) {
             currentSelection.splice(elementIndex, 1);
             selection.set(currentSelection);
             return;
         }
-
-        selection.set([element.id]);
+        
+        const { x, y, width, height } = event.target.getBoundingClientRect();
+        selection.set([{
+            id: element.id,
+            pageX: x,
+            pageY: y,
+            width,
+            height,
+        }]);
         return;
     }
+
+    function onDragStart(e) {
+        isDragging = true;
+        dragStartX = e.pageX;
+        dragStartY = e.pageY
+    }
+
+    function onDrag(e) {
+        if (!isDragging) return;
+        moveX = e.pageX - dragStartX;
+        moveY = e.pageY - dragStartY;
+    }
+
+    function onDragEnd(e) {
+        isDragging = false;
+        dragStartY = 0;
+        dragStartX = 0;
+        moveX = 0;
+        moveY = 0;
+    }
+
     
-    const styles = {
-        transform: `translate(${element.x}px, ${element.y}px)`,
+    
+    $: styles = {
+        transform: `translate(${element.x + moveX}px, ${element.y + moveY}px)`,
         width: `${element.width}px`,
         height: `${element.height}px`,
     }
@@ -47,7 +81,12 @@
             transform: translate(-2px, -2px);
         }
     </style>
-<div class="element-wrapper" style={cssStyle} on:mouseenter={showSelectFrame} on:mouseleave={hideSelectFrame} on:click={() => selectElement(element)}>
+<div class="element-wrapper" style={cssStyle} on:mousemove={onDrag}  on:mouseenter={showSelectFrame} on:mouseleave={(e) => {
+    hideSelectFrame();
+    onDrag(e);
+}} on:mousedown={(e) => {
+    onDragStart(e);
+}} on:mouseup={onDragEnd}>
     {#if showSelectionFrame} <div class="selection-frame"></div> {/if}
     <slot></slot>
 </div>

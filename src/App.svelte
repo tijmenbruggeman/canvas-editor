@@ -1,6 +1,7 @@
 <script lang="ts">
 import { v4 } from 'uuid';
-import { artboards, elements } from "./stores";
+import { artboards } from "./storeWorkspace";
+import { elements } from "./storeEdits";
 
 import EditorMenu from "./EditorMenu.svelte";
 import Workspace from "./Workspace.svelte";
@@ -9,11 +10,11 @@ export let template: Template;
 
 if (template) {
   artboards.set(template.artboards);
-  const elementWithIds = template.elements.map((el) => ({
-    ...el,
+  const initialElements = template.elements.map((e) => ({
+    ...e,
     id: v4(),
-  }));
-  elements.set(elementWithIds);
+  }))
+  elements.set(initialElements);
 }
 
 </script>

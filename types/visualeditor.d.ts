@@ -1,6 +1,6 @@
 type Template = {
   elements: Array<DesignElement>;
-  artboards: Array<Artboard>;
+  artboards: Array<ArtboardSettings>;
   scale: number;
 };
 
@@ -15,8 +15,16 @@ type DesignElement = {
   y: number;
   zoom: number;
   index: number;
-  artboard: 0;
+  artboard: string;
 };
+
+type SelectedElement = {
+  pageX: number;
+  pageY: number;
+  width: number;
+  height: number;
+  id: string;
+}
 
 type TextElement = {
   content: string;
@@ -29,7 +37,17 @@ type ArtboardSettings = {
   width: number;
   height: number;
   id: string;
+  editAreas: Array<EditArea>;
+  dragX: number;
+  dragY: number;
 };
+
+type EditArea = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
 
 type EditorSettings = {
   scale: 1;
