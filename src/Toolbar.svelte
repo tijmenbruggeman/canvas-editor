@@ -3,7 +3,6 @@ import { toolbar } from "./storeWorkspace";
 
 import ToolbarEdit from "./ToolbarEdit.svelte";
 import ToolbarFiles from "./ToolbarFiles.svelte";
-import ToolbarTemplates from "./ToolbarTemplates.svelte";
 import { ToolbarType } from "./ToolbarType";
 
     let selectedToolbar = ToolbarType.Templates
@@ -17,7 +16,6 @@ import { ToolbarType } from "./ToolbarType";
     // path: rotation, resizing
     // 
     const toolbarTypes = {
-        templates: ToolbarTemplates,
         files: ToolbarFiles,
         edit: ToolbarEdit
     }
@@ -25,4 +23,12 @@ import { ToolbarType } from "./ToolbarType";
     $: activeToolbar = toolbarTypes[selectedToolbar];
 </script>
 
-<svelte:component this={activeToolbar} />
+<div class="toolbar">
+    <svelte:component this={activeToolbar} />
+</div>
+
+<style>
+    .toolbar {
+
+    }
+</style>

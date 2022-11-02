@@ -1,37 +1,19 @@
 <script lang="ts">
-  import { selection } from './storeWorkspace';
   import { elements } from './storeEdits';
   import ElementBase from './ElementBase.svelte';
   import SelectedFrame from './SelectedFrame.svelte';
+  import { selection } from "./storeWorkspace";
   export let artboardSettings: ArtboardSettings;
 
-  let isDragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-
-  function onDragStart(e) {
-    if ($selection.length === 0) return;
-    dragStartX = e.pageX;
-    dragStartY = e.pageY
-    isDragging = true;
+  function onUp(e) {
+    const hasClickedArtboard = this === e.target;
+    if (hasClickedArtboard) {
+      selection.set([]);
+    }
   }
-
-  function onMouseMove(e) {
-    if (!isDragging) return;
-    const moveX = dragStartX - e.pageX;
-    const moveY = dragStartY - e.pageY;
-    
-  }
-
-  function onDragEnd(e) {
-    isDragging = false;
-    dragStartY = 0;
-    dragStartX = 0;
-  }
-
 </script>
 
-<div class="artboard" on:mousedown={onDragStart} on:mouseup={onDragEnd} on:mouseleave={onDragEnd} on:mousemove={onMouseMove} style="width: {artboardSettings.width}px; height: {artboardSettings.height}px;">
+<div class="artboard" style="width: {artboardSettings.width}px; height: {artboardSettings.height}px;" on:mouseup={onUp}>
   <SelectedFrame />
   {#each $elements as element}
     <ElementBase element="{element}" />
@@ -43,6 +25,6 @@
   .artboard {
       box-shadow: 0 2px 8px rgb(14 19 24 / 7%);
       background-color: var(--color-artboard);
-      margin: 20px auto;
+      margin: auto;
   }
 </style>

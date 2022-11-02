@@ -10,7 +10,7 @@
     let moveX = 0;
     let moveY = 0;
     
-    $: showSelectionFrame = true;
+    $: showSelectionFrame = false;
 
     function showSelectFrame() {
         showSelectionFrame = true;
@@ -22,11 +22,7 @@
     function selectElement(event, element: DesignElement): void {
         const currentSelection = $selection;
         const elementIndex = currentSelection.findIndex(({ id }) => id === element.id);
-        if (elementIndex >= 0) {
-            currentSelection.splice(elementIndex, 1);
-            selection.set(currentSelection);
-            return;
-        }
+        if (elementIndex >= 0) return
         
         const { x, y, width, height } = event.target.getBoundingClientRect();
         selection.set([{
@@ -39,16 +35,45 @@
         return;
     }
 
+    function deselectElement() {
+        const elementIndex = $selection.findIndex(({ id }) => id === element.id);
+        if (elementIndex < 0) return;
+        const currentSelection = $selection;
+        currentSelection.splice(elementIndex, 1);
+        selection.set(currentSelection);
+    }
+
     function onDragStart(e) {
+        deselectElement();
         isDragging = true;
         dragStartX = e.pageX;
         dragStartY = e.pageY
     }
 
+    function onDown(e) {
+        onDragStart(e);
+    }
+
+    function onUp(e) {
+        onDragEnd(e);
+        selectElement(e, element);
+    }
+
+    function onLeave() {
+        hideSelectFrame();
+    }
+
+    function onMove(e) {
+        onDrag(e);
+    }
     function onDrag(e) {
         if (!isDragging) return;
         moveX = e.pageX - dragStartX;
         moveY = e.pageY - dragStartY;
+    }
+
+    function onEnter() {
+        showSelectFrame()
     }
 
     function onDragEnd(e) {
@@ -81,6 +106,7 @@
         .element-wrapper {
             position: absolute;
             outline: none;
+            user-select: none;
         }
         .selection-frame {
             border: 2px solid blue;
@@ -90,12 +116,12 @@
             transform: translate(-2px, -2px);
         }
     </style>
-<div class="element-wrapper" style={cssStyle} on:mousemove={onDrag}  on:mouseenter={showSelectFrame} on:mouseleave={(e) => {
-    hideSelectFrame();
-    onDrag(e);
-}} on:mousedown={(e) => {
-    onDragStart(e);
-}} on:mouseup={onDragEnd}>
+<div class="element-wrapper" style={cssStyle} 
+    on:mousemove={onMove}
+    on:mouseenter={onEnter}
+    on:mouseleave={onLeave}
+    on:mousedown={onDown} 
+    on:mouseup={onUp}>
     {#if showSelectionFrame} <div class="selection-frame"></div> {/if}
     <slot></slot>
 </div>
