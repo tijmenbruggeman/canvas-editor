@@ -7,44 +7,44 @@
 </style>
 
 <script lang="ts">
-import {
-  elements,
-  clearSelected,
-  moveSelection,
-  commitAction,
-} from "./storeEdits";
+import { elements, clearSelected, startMove, commitAction } from "./storeEdits";
 import ElementBase from "./ElementBase.svelte";
 import SelectedFrame from "./SelectedFrame.svelte";
 export let artboardSettings: ArtboardSettings;
 
 function onDragStart(e) {
   const hasClickedArtboard = this === e.target;
-  let startX = e.pageX;
-  let startY = e.pageY;
-  let moveX = e.pageX;
-  let moveY = e.pageY;
+  const startX = e.pageX;
+  const startY = e.pageY;
+  let moveX = 0;
+  let moveY = 0;
   if (hasClickedArtboard) {
     clearSelected();
+    return;
   }
-  document.onmousemove = function (e) {
+
+  const { commitMove, moveSelection } = startMove();
+
+  function handleMouseMove(e) {
     moveX = e.pageX - startX;
     moveY = e.pageY - startY;
     moveSelection({
-      x: moveX,
-      y: moveY,
+      moveX,
+      moveY,
     });
+  }
+  function handleMouseUp(e) {
+    const movedX = e.pageX - startX;
+    commitMove({
+      moveX: movedX,
+      moveY,
+    });
+    removeEventListener("mousemove", handleMouseMove);
+    removeEventListener("mouseup", handleMouseUp);
+  }
 
-    document.onmouseup = function () {
-      commitAction({
-        attr: {
-          x: moveX,
-          y: moveY,
-        },
-        type: "move",
-      });
-      document.onmousemove = null;
-    };
-  };
+  addEventListener("mousemove", handleMouseMove);
+  addEventListener("mouseup", handleMouseUp);
 }
 </script>
 

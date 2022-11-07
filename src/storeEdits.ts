@@ -55,32 +55,38 @@ function clearSelected() {
   selection.set(initalSelection);
 }
 
-function moveSelection({ x, y }) {
-  const { width, ids, height } = $selection;
+function startMove() {
+  const { width, ids, height, x, y } = $selection;
   const [elementId] = ids;
   const elementIndex = $elements.findIndex(({ id }) => id === elementId);
-
-  elements.update((e) => {
-    // Currently multi-select is not possible
-    // so no no need to update all elements
-    e[elementIndex].x = x;
-    e[elementIndex].y = y;
-    return e;
-  });
-  selection.set({
-    x,
-    y,
-    ids,
-    width,
-    height,
-  });
+  const { x: elementX, y: elementY } = $elements[elementIndex];
+  return {
+    moveSelection: function moveSelection({ moveX, moveY }) {
+      elements.update((e) => {
+        // Currently multi-select is not possible
+        // so no no need to update all elements
+        e[elementIndex].x = elementX + moveX;
+        e[elementIndex].y = elementY + moveY;
+        return e;
+      });
+      selection.set({
+        x: x + moveX,
+        y: y + moveY,
+        ids,
+        width,
+        height,
+      });
+    },
+    commitMove: function commitMove({ moveX, moveY }) {
+      commitAction({
+        attr: {
+          x: elementX + moveX,
+          y: elementY + moveY,
+        },
+        type: "move",
+      });
+    },
+  };
 }
 
-export {
-  elements,
-  actions,
-  selection,
-  commitAction,
-  clearSelected,
-  moveSelection,
-};
+export { elements, actions, selection, commitAction, clearSelected, startMove };
