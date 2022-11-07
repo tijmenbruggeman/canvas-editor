@@ -1,14 +1,13 @@
 <script lang="ts">
-  import { elements } from './storeEdits';
+  import { elements, clearSelected } from './storeEdits';
   import ElementBase from './ElementBase.svelte';
   import SelectedFrame from './SelectedFrame.svelte';
-  import { selection } from "./storeWorkspace";
   export let artboardSettings: ArtboardSettings;
 
   function onUp(e) {
     const hasClickedArtboard = this === e.target;
     if (hasClickedArtboard) {
-      selection.set([]);
+      clearSelected();
     }
   }
 </script>

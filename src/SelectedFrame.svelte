@@ -37,34 +37,28 @@
         }
 </style>
 <script>
-    import { selection } from "./storeWorkspace";
+    import { selection } from "./storeEdits";
     import { objectToStyle } from "./utils/objectToStyle";
-    $: selectedElements = $selection.map(({ id, pageX, pageY, width, height }) => {
-        const styles = {
-            transform: `translate(${pageX - 2}px, ${pageY - 2}px)`,
-            width: `${width}px`,
-            height: `${height}px`,
-        }
-        const style = objectToStyle(styles);
-        return {
-            style,
-            elementId: id,
-        }
-    });
+    const { x, y, width, height } = $selection;
+    console.log('$selection:', $selection)
+    const styles = {
+        transform: `translate(${x - 2}px, ${y - 2}px)`,
+        width: `${width}px`,
+        height: `${height}px`,
+    }
+    const style = objectToStyle(styles);
 
 </script>
 
 <div class="selection-frame">
-    {#each selectedElements as selected}
-    <div class="selected-frame" style={selected.style}>
+    <div class="selected-frame" style={style}>
         <div class="selected-handle handle-corner handle-tr"></div>
         <div class="selected-handle handle-corner handle-tl"></div>
         <div class="selected-handle handle-corner handle-br"></div>
         <div class="selected-handle handle-corner handle-bl"></div>
-            <div class="selected-handle handle-side handle-t"></div>
-            <div class="selected-handle handle-side handle-l"></div>
-            <div class="selected-handle handle-side handle-r"></div>
-            <div class="selected-handle handle-side handle-b"></div>
-        </div>
-    {/each}
+        <div class="selected-handle handle-side handle-t"></div>
+        <div class="selected-handle handle-side handle-l"></div>
+        <div class="selected-handle handle-side handle-r"></div>
+        <div class="selected-handle handle-side handle-b"></div>
+    </div>
 </div>

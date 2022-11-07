@@ -1,7 +1,6 @@
 <script lang="ts">
     import { objectToStyle } from "./utils/objectToStyle";
-    import { selection } from "./storeWorkspace";
-  import { commitAction } from "./storeEdits";
+    import { commitAction, selection } from "./storeEdits";
     
     export let element: DesignElement;
     let isDragging = false;
@@ -21,25 +20,26 @@
     }
     function selectElement(event, element: DesignElement): void {
         const currentSelection = $selection;
-        const elementIndex = currentSelection.findIndex(({ id }) => id === element.id);
-        if (elementIndex >= 0) return
+        const isSelected = currentSelection.ids.some((id) => id === element.id);
+        if (isSelected) return;
         
         const { x, y, width, height } = event.target.getBoundingClientRect();
-        selection.set([{
-            id: element.id,
-            pageX: x,
-            pageY: y,
+        selection.set({
+            ids: [element.id],
+            x: x,
+            y: y,
             width,
             height,
-        }]);
+        });
         return;
     }
 
     function deselectElement() {
-        const elementIndex = $selection.findIndex(({ id }) => id === element.id);
+        const elementIndex = $selection.ids.findIndex((id) => id === element.id);
         if (elementIndex < 0) return;
         const currentSelection = $selection;
-        currentSelection.splice(elementIndex, 1);
+        currentSelection.ids.splice(elementIndex, 1);
+        console.log('currentSelection:', currentSelection)
         selection.set(currentSelection);
     }
 
@@ -56,7 +56,6 @@
 
     function onUp(e) {
         onDragEnd(e);
-        selectElement(e, element);
     }
 
     function onLeave() {
@@ -77,6 +76,7 @@
     }
 
     function onDragEnd(e) {
+        selectElement(e, element);
         isDragging = false;
         commitAction({
             type: 'move',
@@ -121,7 +121,7 @@
     on:mouseenter={onEnter}
     on:mouseleave={onLeave}
     on:mousedown={onDown} 
-    on:mouseup={onUp}>
+    on:mouseup={onDragEnd}>
     {#if showSelectionFrame} <div class="selection-frame"></div> {/if}
     <slot></slot>
 </div>
