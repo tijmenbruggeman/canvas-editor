@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { writable } from "svelte/store";
 
 type EditAction = {
   id: string;
@@ -15,12 +15,12 @@ type Selection = {
 };
 
 const initalSelection = {
-    ids: [],
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-}
+  ids: [],
+  x: 0,
+  y: 0,
+  width: 0,
+  height: 0,
+};
 
 const actions = writable<Array<EditAction>>([]);
 const elements = writable<Array<DesignElement>>([]);
@@ -33,7 +33,7 @@ elements.subscribe((e) => {
 
 function commitAction(action: EditAction) {
   const elementIndex = $elements.findIndex(({ id }) => id === action.id);
-  if (action.type === 'move') {
+  if (action.type === "move") {
     return elements.update((e) => {
       e[elementIndex].x = action.attr.x;
       e[elementIndex].y = action.attr.y;
@@ -47,7 +47,7 @@ function commitAction(action: EditAction) {
 }
 
 function clearSelected() {
-    selection.set(initalSelection);
+  selection.set(initalSelection);
 }
 
 export { elements, actions, commitAction, selection, clearSelected };
