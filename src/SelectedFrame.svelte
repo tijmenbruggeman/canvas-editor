@@ -37,21 +37,23 @@
         }
 </style>
 <script>
+  import { onDestroy } from "svelte";
     import { selection } from "./storeEdits";
     import { objectToStyle } from "./utils/objectToStyle";
-    const { x, y, width, height } = $selection;
-    console.log('$selection:', $selection)
-    const styles = {
-        transform: `translate(${x - 2}px, ${y - 2}px)`,
-        width: `${width}px`,
-        height: `${height}px`,
-    }
-    const style = objectToStyle(styles);
+    let cssStyle = objectToStyle({});
 
+	const unsubscribe = selection.subscribe(({ x, y, width, height}) => {
+		cssStyle = objectToStyle({
+            transform: `translate(${x - 2}px, ${y - 2}px)`,
+            width: `${width}px`,
+            height: `${height}px`,
+        });
+	});
+    onDestroy(unsubscribe);
 </script>
 
 <div class="selection-frame">
-    <div class="selected-frame" style={style}>
+    <div class="selected-frame" style={cssStyle}>
         <div class="selected-handle handle-corner handle-tr"></div>
         <div class="selected-handle handle-corner handle-tl"></div>
         <div class="selected-handle handle-corner handle-br"></div>

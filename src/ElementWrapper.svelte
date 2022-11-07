@@ -9,15 +9,7 @@
     let moveX = 0;
     let moveY = 0;
     
-    $: showSelectionFrame = false;
 
-    function showSelectFrame() {
-        showSelectionFrame = true;
-        
-    }
-    function hideSelectFrame() {
-        showSelectionFrame = false;
-    }
     function selectElement(event, element: DesignElement): void {
         const currentSelection = $selection;
         const isSelected = currentSelection.ids.some((id) => id === element.id);
@@ -31,7 +23,6 @@
             width,
             height,
         });
-        return;
     }
 
     function deselectElement() {
@@ -39,7 +30,6 @@
         if (elementIndex < 0) return;
         const currentSelection = $selection;
         currentSelection.ids.splice(elementIndex, 1);
-        console.log('currentSelection:', currentSelection)
         selection.set(currentSelection);
     }
 
@@ -54,14 +44,6 @@
         onDragStart(e);
     }
 
-    function onUp(e) {
-        onDragEnd(e);
-    }
-
-    function onLeave() {
-        hideSelectFrame();
-    }
-
     function onMove(e) {
         onDrag(e);
     }
@@ -69,10 +51,6 @@
         if (!isDragging) return;
         moveX = e.pageX - dragStartX;
         moveY = e.pageY - dragStartY;
-    }
-
-    function onEnter() {
-        showSelectFrame()
     }
 
     function onDragEnd(e) {
@@ -107,21 +85,15 @@
             position: absolute;
             outline: none;
             user-select: none;
+            border: 1px solid transparent;
         }
-        .selection-frame {
-            border: 2px solid blue;
-            height: 100%;
-            width: 100%;
-            position: absolute;
-            transform: translate(-2px, -2px);
+        .element-wrapper:hover {
+            border-color: blue;
         }
     </style>
 <div class="element-wrapper" style={cssStyle} 
     on:mousemove={onMove}
-    on:mouseenter={onEnter}
-    on:mouseleave={onLeave}
     on:mousedown={onDown} 
     on:mouseup={onDragEnd}>
-    {#if showSelectionFrame} <div class="selection-frame"></div> {/if}
     <slot></slot>
 </div>
