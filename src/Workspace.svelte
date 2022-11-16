@@ -10,8 +10,9 @@
   width: 50px;
   height: 50px;
   display: block;
-  border-radius: 25px;
-  border: 1px solid #ccc;
+  border-radius: 26px;
+  border: 2px solid #ccc;
+  background-color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
