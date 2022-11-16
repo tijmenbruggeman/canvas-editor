@@ -5,7 +5,6 @@
   height: 100%;
   position: absolute;
   z-index: 50;
-  pointer-events: none;
 }
 .selected-handle {
   position: absolute;
@@ -20,40 +19,71 @@
 .handle-tr {
   top: -8px;
   right: -8px;
+  cursor: ne-resize;
 }
 .handle-tl {
   top: -8px;
   left: -8px;
+  cursor: nw-resize;
 }
 .handle-br {
   bottom: -8px;
   right: -8px;
+  cursor: se-resize;
 }
 .handle-bl {
   bottom: -8px;
   left: -8px;
+  cursor: sw-resize;
 }
 </style>
 
-<script>
+<script lang="ts">
 import { onDestroy } from "svelte";
-import { selection } from "./storeEdits";
+import { selection, startTransform } from "./storeEdits";
 import { objectToStyle } from "./utils/objectToStyle";
 let cssStyle = objectToStyle({});
 
+function onResizeStart(e, origin: "tr" | "br" | "bl" | "tl") {
+  const startX = e.pageX;
+  const startY = e.pageY;
+  let moveX = 0;
+  let moveY = 0;
+
+  const { commitTransform, transformSelection } = startTransform();
+
+  function handleMouseMove({ pageX, pageY }) {
+    transformSelection({
+      height: 0,
+    });
+  }
+  function handleMouseUp(e) {
+    commitTransform({ moveX: 0, moveY: 0, width: 0, height: 0 });
+    removeEventListener("mousemove", handleMouseMove);
+    removeEventListener("mouseup", handleMouseUp);
+  }
+  addEventListener("mousemove", handleMouseMove);
+  addEventListener("mouseup", handleMouseUp);
+}
+
 const unsubscribe = selection.subscribe(({ x, y, width, height }) => {
   cssStyle = objectToStyle({
-    transform: `translate(${x - 2}px, ${y - 2}px)`,
+    transform: `translate(${x - 1}px, ${y - 1}px)`,
     width: `${width}px`,
     height: `${height}px`,
   });
 });
+
 onDestroy(unsubscribe);
 </script>
 
-<div class="selection-frame">
+<div class="selection-frame" data-target="frame">
   <div class="selected-frame" style="{cssStyle}">
-    <div class="selected-handle handle-corner handle-tr"></div>
+    <div
+      data-target="handle"
+      class="selected-handle handle-corner handle-tr"
+      on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'tr')}">
+    </div>
     <div class="selected-handle handle-corner handle-tl"></div>
     <div class="selected-handle handle-corner handle-br"></div>
     <div class="selected-handle handle-corner handle-bl"></div>

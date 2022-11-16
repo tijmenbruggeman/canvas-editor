@@ -95,6 +95,49 @@ function startMove() {
   };
 }
 
+function startTransform() {
+  const { ids } = $selection;
+  const [elementId] = ids;
+  const elementIndex = $elements.findIndex(({ id }) => id === elementId);
+  const currentElement = $elements[elementIndex];
+  return {
+    transformSelection: function moveSelection({
+      moveX,
+      moveY,
+      width,
+      height,
+    }) {
+      elements.update((e) => {
+        // Currently multi-select is not possible
+        // so no no need to update all elements
+        e[elementIndex].x = currentElement.x + moveX;
+        e[elementIndex].y = currentElement.y + moveY;
+        e[elementIndex].width = currentElement.width + width;
+        e[elementIndex].height = currentElement.height + height;
+        return e;
+      });
+      selection.set({
+        x: $selection.x + moveX,
+        y: $selection.y + moveY,
+        ids,
+        width: $selection.width + width,
+        height: $selection.height + height,
+      });
+    },
+    commitTransform: function commitTransform({ moveX, moveY, width, height }) {
+      commitAction({
+        attr: {
+          x: currentElement.x + moveX,
+          y: currentElement.y + moveY,
+          width: currentElement.width + width,
+          height: currentElement.height + height,
+        },
+        type: "transform",
+      });
+    },
+  };
+}
+
 type AddElementParams = Partial<AnyDesignElement>;
 
 function addElement({ width, type, height, src, artboard }: AddElementParams) {
@@ -122,5 +165,6 @@ export {
   commitAction,
   clearSelected,
   startMove,
+  startTransform,
   addElement,
 };

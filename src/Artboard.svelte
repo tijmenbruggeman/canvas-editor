@@ -25,9 +25,9 @@ function onDragStart(e) {
 
   const { commitMove, moveSelection } = startMove();
 
-  function handleMouseMove(e) {
-    moveX = e.pageX - startX;
-    moveY = e.pageY - startY;
+  function handleMouseMove(moveE) {
+    moveX = moveE.pageX - startX;
+    moveY = moveE.pageY - startY;
     moveSelection({
       moveX,
       moveY,
