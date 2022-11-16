@@ -1,3 +1,4 @@
+import { v4 } from "uuid";
 import { writable } from "svelte/store";
 
 type EditAction = {
@@ -45,6 +46,11 @@ function commitAction(action: EditAction) {
       return e;
     });
   }
+  if (action.type === "add") {
+    const existingElemnents = $elements;
+    existingElemnents.push(action.attr);
+    return elements.set(existingElemnents);
+  }
   actions.update((a) => {
     a.push(action);
     return a;
@@ -89,4 +95,32 @@ function startMove() {
   };
 }
 
-export { elements, actions, selection, commitAction, clearSelected, startMove };
+type AddElementParams = Partial<AnyDesignElement>;
+
+function addElement({ width, type, height, src, artboard }: AddElementParams) {
+  const newElement: AnyDesignElement = {
+    id: v4(),
+    x: 0,
+    y: 0,
+    zoom: 0,
+    type,
+    width,
+    height,
+    src,
+    artboard,
+  };
+  commitAction({
+    type: "add",
+    attr: newElement,
+  });
+}
+
+export {
+  elements,
+  actions,
+  selection,
+  commitAction,
+  clearSelected,
+  startMove,
+  addElement,
+};

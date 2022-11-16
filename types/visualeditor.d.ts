@@ -18,19 +18,24 @@ type DesignElement = {
   artboard: string;
 };
 
+type TextElement = {
+  content: string;
+};
+type ImgElement = {
+  src: string;
+};
+
+type ImgDesignElement = DesignElement & ImgElement;
+type TextDesignElement = DesignElement & TextElement;
+
+type AnyDesignElement = Partial<ImgDesignElement & TextDesignElement>;
+
 type SelectedElement = {
   pageX: number;
   pageY: number;
   width: number;
   height: number;
   id: string;
-}
-
-type TextElement = {
-  content: string;
-};
-type ImgElement = {
-  src: string;
 };
 
 type ArtboardSettings = {
@@ -47,7 +52,7 @@ type EditArea = {
   y: number;
   width: number;
   height: number;
-}
+};
 
 type EditorSettings = {
   scale: 1;

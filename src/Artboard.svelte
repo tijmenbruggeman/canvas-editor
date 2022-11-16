@@ -7,7 +7,7 @@
 </style>
 
 <script lang="ts">
-import { elements, clearSelected, startMove, commitAction } from "./storeEdits";
+import { elements, clearSelected, startMove } from "./storeEdits";
 import ElementBase from "./ElementBase.svelte";
 import SelectedFrame from "./SelectedFrame.svelte";
 export let artboardSettings: ArtboardSettings;
