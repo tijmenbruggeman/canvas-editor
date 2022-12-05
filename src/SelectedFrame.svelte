@@ -53,12 +53,35 @@ function onResizeStart(e, origin: "tr" | "br" | "bl" | "tl") {
   const { commitTransform, transformSelection } = startTransform();
 
   function handleMouseMove({ pageX, pageY }) {
-    transformSelection({
+    const change = {
+      moveX: 0,
+      moveY: 0,
+      width: 0,
       height: 0,
-    });
+    };
+    switch (origin) {
+      case "tr":
+        change.height = startY - pageY;
+        change.width = pageX - startX;
+        change.moveY = pageY - startY;
+      case "tl":
+        change.height = startY - pageY;
+        change.width = startX - pageX;
+        change.moveX = pageX - startX;
+        change.moveY = pageY - startY;
+      default:
+        console.log(pageY, pageX);
+    }
+    transformSelection(change);
   }
   function handleMouseUp(e) {
-    commitTransform({ moveX: 0, moveY: 0, width: 0, height: 0 });
+    const change = {
+      moveX: 0,
+      moveY: e.pageY - startY,
+      width: e.pageX - startX,
+      height: startY - e.pageY,
+    };
+    commitTransform(change);
     removeEventListener("mousemove", handleMouseMove);
     removeEventListener("mouseup", handleMouseUp);
   }
@@ -84,7 +107,10 @@ onDestroy(unsubscribe);
       class="selected-handle handle-corner handle-tr"
       on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'tr')}">
     </div>
-    <div class="selected-handle handle-corner handle-tl"></div>
+    <div
+      class="selected-handle handle-corner handle-tl"
+      on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'tl')}">
+    </div>
     <div class="selected-handle handle-corner handle-br"></div>
     <div class="selected-handle handle-corner handle-bl"></div>
     <div class="selected-handle handle-side handle-t"></div>

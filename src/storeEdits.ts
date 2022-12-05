@@ -46,6 +46,15 @@ function commitAction(action: EditAction) {
       return e;
     });
   }
+  if (action.type === "transform") {
+    return elements.update((e) => {
+      e[elementIndex].x = action.attr.x;
+      e[elementIndex].y = action.attr.y;
+      e[elementIndex].width = action.attr.width;
+      e[elementIndex].height = action.attr.height;
+      return e;
+    });
+  }
   if (action.type === "add") {
     const existingElemnents = $elements;
     existingElemnents.push(action.attr);
@@ -83,7 +92,7 @@ function startMove() {
         height,
       });
     },
-    commitMove: function commitMove({ moveX, moveY }) {
+    commitMove({ moveX, moveY }) {
       commitAction({
         attr: {
           x: elementX + moveX,
@@ -96,17 +105,12 @@ function startMove() {
 }
 
 function startTransform() {
-  const { ids } = $selection;
-  const [elementId] = ids;
+  const currentSelection = { ...$selection };
+  const [elementId] = currentSelection.ids;
   const elementIndex = $elements.findIndex(({ id }) => id === elementId);
-  const currentElement = $elements[elementIndex];
+  const currentElement = { ...$elements[elementIndex] };
   return {
-    transformSelection: function moveSelection({
-      moveX,
-      moveY,
-      width,
-      height,
-    }) {
+    transformSelection({ moveX, moveY, width, height }) {
       elements.update((e) => {
         // Currently multi-select is not possible
         // so no no need to update all elements
@@ -117,14 +121,14 @@ function startTransform() {
         return e;
       });
       selection.set({
-        x: $selection.x + moveX,
-        y: $selection.y + moveY,
-        ids,
-        width: $selection.width + width,
-        height: $selection.height + height,
+        x: currentSelection.x + moveX,
+        y: currentSelection.y + moveY,
+        ids: currentSelection.ids,
+        width: currentSelection.width + width,
+        height: currentSelection.height + height,
       });
     },
-    commitTransform: function commitTransform({ moveX, moveY, width, height }) {
+    commitTransform({ moveX, moveY, width, height }) {
       commitAction({
         attr: {
           x: currentElement.x + moveX,
