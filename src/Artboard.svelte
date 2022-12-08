@@ -52,8 +52,8 @@ function onDragStart(e) {
   class="artboard"
   style="width: {artboardSettings.width}px; height: {artboardSettings.height}px;"
   on:mousedown="{onDragStart}">
-  <SelectedFrame />
   {#each $elements as element}
     <ElementBase element="{element}" />
   {/each}
+  <SelectedFrame />
 </div>

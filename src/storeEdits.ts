@@ -70,6 +70,16 @@ function clearSelected() {
   selection.set(initalSelection);
 }
 
+function editSelected() {
+  const [elementId] = $selection.ids;
+  const elementIndex = $elements.findIndex(({ id }) => id === elementId);
+  return elements.update((e) => {
+    e[elementIndex].mode = "edit";
+    document.getElementById(elementId).focus();
+    return e;
+  });
+}
+
 function startMove() {
   const { width, ids, height, x, y } = $selection;
   const [elementId] = ids;
@@ -168,6 +178,7 @@ export {
   selection,
   commitAction,
   clearSelected,
+  editSelected,
   startMove,
   startTransform,
   addElement,

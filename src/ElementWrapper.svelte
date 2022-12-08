@@ -35,10 +35,6 @@ $: styles = {
 $: cssStyle = objectToStyle(styles);
 </script>
 
-<div
-  class="element-wrapper"
-  style="{cssStyle}"
-  id="{element.id}"
-  on:mousedown="{selectElement}">
+<div class="element-wrapper" style="{cssStyle}" on:mousedown="{selectElement}">
   <slot />
 </div>

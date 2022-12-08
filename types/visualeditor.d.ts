@@ -16,6 +16,7 @@ type DesignElement = {
   zoom: number;
   index: number;
   artboard: string;
+  mode?: string;
 };
 
 type TextElement = {
