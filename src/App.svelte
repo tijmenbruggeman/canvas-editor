@@ -8,6 +8,7 @@
   --color-workspace: #edf0f2;
   --color-handle-bg: #ffffff;
   --color-handle-border: #edf0f2;
+  --color-handle-side-bg: blue;
 
   --color-bg-0: #f6f9fc;
   --color-bg-1: #edf0f2;

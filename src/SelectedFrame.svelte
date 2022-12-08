@@ -1,13 +1,33 @@
 <style>
 .selected-frame {
-  border: 2px solid blue;
   width: 100%;
   height: 100%;
   position: absolute;
   z-index: 50;
 }
+
 .selected-handle {
   position: absolute;
+}
+.handle-t,
+.handle-b {
+  height: 2px;
+  cursor: ns-resize;
+  width: 100%;
+  background: var(--color-handle-side-bg);
+}
+.handle-l,
+.handle-r {
+  width: 2px;
+  height: 100%;
+  cursor: ew-resize;
+  background: var(--color-handle-side-bg);
+}
+.handle-r {
+  right: -3px;
+}
+.handle-b {
+  bottom: -3px;
 }
 .handle-corner {
   background-color: var(--color-handle-bg);
@@ -15,6 +35,7 @@
   height: 12px;
   width: 12px;
   border-radius: 50%;
+  z-index: 10;
 }
 .handle-tr {
   top: -8px;
@@ -48,12 +69,10 @@ type TransformDirectionParams = {
   pageX: number;
   pageY: number;
 };
-
-function onResizeStart(e, origin: "tr" | "br" | "bl" | "tl") {
+type TransformOrigins = "tr" | "br" | "bl" | "tl" | "t" | "b" | "l" | "r";
+function onResizeStart(e, origin: TransformOrigins) {
   const startX = e.pageX;
   const startY = e.pageY;
-  let moveX = 0;
-  let moveY = 0;
 
   const { commitTransform, transformSelection } = startTransform();
 
@@ -82,6 +101,20 @@ function onResizeStart(e, origin: "tr" | "br" | "bl" | "tl") {
         break;
       case "bl":
         change.height = pageY - startY;
+        change.width = startX - pageX;
+        change.moveX = pageX - startX;
+        break;
+      case "b":
+        change.height = pageY - startY;
+        break;
+      case "t":
+        change.height = startY - pageY;
+        change.moveY = pageY - startY;
+        break;
+      case "r":
+        change.width = pageX - startX;
+        break;
+      case "l":
         change.width = startX - pageX;
         change.moveX = pageX - startX;
         break;
@@ -134,9 +167,21 @@ onDestroy(unsubscribe);
       class="selected-handle handle-corner handle-bl"
       on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'bl')}">
     </div>
-    <div class="selected-handle handle-side handle-t"></div>
-    <div class="selected-handle handle-side handle-l"></div>
-    <div class="selected-handle handle-side handle-r"></div>
-    <div class="selected-handle handle-side handle-b"></div>
+    <div
+      class="selected-handle handle-side handle-t"
+      on:mousedown|stopPropagation="{(e) => onResizeStart(e, 't')}">
+    </div>
+    <div
+      class="selected-handle handle-side handle-l"
+      on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'l')}">
+    </div>
+    <div
+      class="selected-handle handle-side handle-r"
+      on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'r')}">
+    </div>
+    <div
+      class="selected-handle handle-side handle-b"
+      on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'b')}">
+    </div>
   </div>
 </div>
