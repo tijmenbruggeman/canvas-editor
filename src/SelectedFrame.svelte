@@ -44,6 +44,11 @@ import { selection, startTransform } from "./storeEdits";
 import { objectToStyle } from "./utils/objectToStyle";
 let cssStyle = objectToStyle({});
 
+type TransformDirectionParams = {
+  pageX: number;
+  pageY: number;
+};
+
 function onResizeStart(e, origin: "tr" | "br" | "bl" | "tl") {
   const startX = e.pageX;
   const startY = e.pageY;
@@ -52,7 +57,7 @@ function onResizeStart(e, origin: "tr" | "br" | "bl" | "tl") {
 
   const { commitTransform, transformSelection } = startTransform();
 
-  function handleMouseMove({ pageX, pageY }) {
+  function transformDirection({ pageX, pageY }: TransformDirectionParams) {
     const change = {
       moveX: 0,
       moveY: 0,
@@ -64,23 +69,33 @@ function onResizeStart(e, origin: "tr" | "br" | "bl" | "tl") {
         change.height = startY - pageY;
         change.width = pageX - startX;
         change.moveY = pageY - startY;
+        break;
       case "tl":
         change.height = startY - pageY;
         change.width = startX - pageX;
         change.moveX = pageX - startX;
         change.moveY = pageY - startY;
+        break;
+      case "br":
+        change.height = pageY - startY;
+        change.width = pageX - startX;
+        break;
+      case "bl":
+        change.height = pageY - startY;
+        change.width = startX - pageX;
+        change.moveX = pageX - startX;
+        break;
       default:
-        console.log(pageY, pageX);
+        throw new Error("undefined direction");
     }
+    return change;
+  }
+  function handleMouseMove(e) {
+    const change = transformDirection(e);
     transformSelection(change);
   }
   function handleMouseUp(e) {
-    const change = {
-      moveX: 0,
-      moveY: e.pageY - startY,
-      width: e.pageX - startX,
-      height: startY - e.pageY,
-    };
+    const change = transformDirection(e);
     commitTransform(change);
     removeEventListener("mousemove", handleMouseMove);
     removeEventListener("mouseup", handleMouseUp);
@@ -111,8 +126,14 @@ onDestroy(unsubscribe);
       class="selected-handle handle-corner handle-tl"
       on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'tl')}">
     </div>
-    <div class="selected-handle handle-corner handle-br"></div>
-    <div class="selected-handle handle-corner handle-bl"></div>
+    <div
+      class="selected-handle handle-corner handle-br"
+      on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'br')}">
+    </div>
+    <div
+      class="selected-handle handle-corner handle-bl"
+      on:mousedown|stopPropagation="{(e) => onResizeStart(e, 'bl')}">
+    </div>
     <div class="selected-handle handle-side handle-t"></div>
     <div class="selected-handle handle-side handle-l"></div>
     <div class="selected-handle handle-side handle-r"></div>
