@@ -1,3 +1,1 @@
-export enum ElementType {
-  Img = 'img',
-}
+export type ElementType = "img" | "text";

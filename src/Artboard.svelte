@@ -1,7 +1,7 @@
 <style>
 .artboard {
   box-shadow: 0 2px 8px rgb(14 19 24 / 7%);
-  background-color: var(--color-artboard);
+  background-color: var(--artboard-bg-light);
   margin: auto;
 }
 </style>

@@ -138,6 +138,12 @@ function onResizeStart(e, origin: TransformOrigins) {
 }
 
 const unsubscribe = selection.subscribe(({ x, y, width, height }) => {
+  if (width === 0 && height === 0) {
+    cssStyle = objectToStyle({
+      display: "none",
+    });
+    return;
+  }
   cssStyle = objectToStyle({
     transform: `translate(${x - 1}px, ${y - 1}px)`,
     width: `${width}px`,

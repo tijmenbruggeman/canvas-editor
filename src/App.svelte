@@ -4,14 +4,25 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 :root {
-  --color-artboard: #ffffff;
-  --color-workspace: #edf0f2;
+  --light-bg: #fff;
+  --light-text: #000;
+  --highlight: #ff6700;
+
+  --artboard-bg-light: #ffffff;
+  --workspace-bg-light: #e9e9e9;
   --color-handle-bg: #ffffff;
   --color-handle-border: #edf0f2;
-  --color-handle-side-bg: blue;
+  --color-handle-side-bg: var(--highlight);
 
   --color-bg-0: #f6f9fc;
   --color-bg-1: #edf0f2;
+
+  --toolbar-shadow: 0 0 0 1px rgba(64, 87, 109, 0.07),
+    0 2px 12px rgba(53, 71, 90, 0.2);
+
+  --toolbar-bg: var(--light-bg);
+  --button-color: var(--light-text);
+  --button-sec-bg-light: var(--workspace-bg-light);
 }
 .editor {
   height: 100%;

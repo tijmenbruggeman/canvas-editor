@@ -1,9 +1,17 @@
 <style>
 .element-text {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+.element-text-editor {
   overflow-wrap: break-word;
+  display: inline;
+  width: 100%;
 }
 .element-text[contenteditable] {
-  cursor: "text";
+  cursor: text;
+  outline: none;
 }
 </style>
 
@@ -12,13 +20,13 @@ export let element: DesignElement & TextElement;
 
 let contentEdit: boolean = false;
 function editContent() {
-  console.log("log");
   contentEdit = true;
 }
 </script>
 
-<span
-  class="element-text"
-  id="{element.id}"
-  on:mousedown="{editContent}"
-  contenteditable="{contentEdit}">{element.content}</span>
+<div class="element-text">
+  <span
+    class="element-text-editor"
+    on:mousedown="{editContent}"
+    contenteditable="{contentEdit}">{element.content}</span>
+</div>

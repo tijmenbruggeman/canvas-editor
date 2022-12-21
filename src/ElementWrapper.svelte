@@ -6,17 +6,19 @@
   border: 1px solid transparent;
 }
 .element-wrapper:hover {
-  border-color: blue;
+  border-color: var(--highlight);
 }
 </style>
 
 <script lang="ts">
 import { selection } from "./storeEdits";
+import { setToolbarType } from "./storeWorkspace";
 import { objectToStyle } from "./utils/objectToStyle";
 
 export let element: DesignElement;
 
 function selectElement() {
+  setToolbarType(element.type);
   selection.set({
     height: element.height,
     width: element.width,
