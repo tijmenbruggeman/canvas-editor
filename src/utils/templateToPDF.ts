@@ -30,18 +30,16 @@ const elementRenderer: Record<
 > = {
   img: async function renderImage({ page, element, doc }) {
     let image: PDFImage;
-    const jpgBytes = await fetch(element.src).then((r) => r);
-    console.log("jpgBytes:", jpgBytes);
-    if (element.src.endsWith("jpg")) {
-      image = await doc.embedJpg(jpgBytes);
+    
+    const { type, buffer } = await fetch(element.src).then(async (r) => ({
+      type: r.headers.get("Content-Type"),
+      buffer: await r.arrayBuffer(),
+    }));
+    if (type === "image/jpeg") {
+      image = await doc.embedJpg(buffer);
     }
-    if (element.src.endsWith("png")) {
-      const pngBytes = await fetch(element.src).then((r) => r.arrayBuffer());
-      image = await doc.embedPng(pngBytes);
-    }
-    if (element.src.startsWith("data:image/png")) {
-      const pngBytes = await fetch(element.src).then((r) => r.arrayBuffer());
-      image = await doc.embedPng(pngBytes);
+    if (type === "image/png") {
+      image = await doc.embedPng(buffer);
     }
     if (!image) return;
     page.drawImage(image, {

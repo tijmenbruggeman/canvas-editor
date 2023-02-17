@@ -2,10 +2,12 @@
 .toolbar-wrapper {
   display: flex;
   justify-content: center;
+  position: fixed;
+  width: 100%;
+  bottom: 12px;
 }
 .toolbar {
   display: flex;
-  transform: translateY(-100px);
   padding: 5px 10px;
   background-color: var(--toolbar-bg);
   box-shadow: var(--toolbar-shadow);
