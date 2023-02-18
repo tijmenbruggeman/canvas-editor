@@ -21,6 +21,7 @@ type DesignElement = {
 
 type TextElement = {
   content: string;
+  align: 'center', 'left', 'right';
 };
 type ImgElement = {
   src: string;
