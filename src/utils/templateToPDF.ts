@@ -6,11 +6,13 @@ export async function templateToPDF(template: Template): Promise<Uint8Array> {
   await Promise.all(
     template.artboards.map(async (artboard) => {
       const page = doc.addPage([artboard.width, artboard.height]);
-      await Promise.all(
-        template.elements.map((element) =>
-          elementRenderer[element.type]({ element, page, doc })
-        )
-      );
+      await Promise.all(template.elements.map((element) => {
+        const modifiedElement = {
+          ...element,
+          y: artboard.height - element.y - element.height, // PDF Y = 0 at the bottom
+        }
+        return elementRenderer[element.type]({ element: modifiedElement, page, doc })
+      }));
     })
   );
   const pdfBytes = await doc.save();
@@ -22,16 +24,17 @@ interface RenderBase {
   doc: PDFDocument;
 }
 interface RenderImageParams extends RenderBase {
-  element: ImgDesignElement;
+  element: ImgDesignElement | TextDesignElement;
 }
 const elementRenderer: Record<
   ElementType,
   (params: RenderImageParams) => void
 > = {
   img: async function renderImage({ page, element, doc }) {
+    const imgElement = element as ImgDesignElement;
     let image: PDFImage;
     
-    const { type, buffer } = await fetch(element.src).then(async (r) => ({
+    const { type, buffer } = await fetch(imgElement.src).then(async (r) => ({
       type: r.headers.get("Content-Type"),
       buffer: await r.arrayBuffer(),
     }));
@@ -43,11 +46,20 @@ const elementRenderer: Record<
     }
     if (!image) return;
     page.drawImage(image, {
-      x: element.x,
-      y: element.y,
-      width: element.width,
-      height: element.height,
+      x: imgElement.x,
+      y: imgElement.y,
+      width: imgElement.width,
+      height: imgElement.height,
     });
   },
-  text: function renderText({ page, element, doc }) {},
+  text: function renderText({ page, element, doc }) {
+    const textElement = element as TextDesignElement;
+    page.drawText(textElement.content, {
+      x: element.x,
+      y: element.y,
+      // size: element.fontSize,
+      // font: doc.embedStandardFont(element.fontFamily),
+      // color: element.color,
+    });
+  },
 };
