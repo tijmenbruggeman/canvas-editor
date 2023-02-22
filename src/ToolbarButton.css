@@ -1,0 +1,22 @@
+.toolbar-button {
+  width: 48px;
+  height: 48px;
+  margin: 4px;
+  display: block;
+  border-radius: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+.toolbar-button-text {
+  font-size: 11px;
+  opacity: 0.5;
+  margin-top: 4px;
+}
+.toolbar-addfile-input {
+  display: none;
+}
