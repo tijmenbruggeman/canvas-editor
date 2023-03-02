@@ -1,4 +1,10 @@
-import { PDFDocument, PDFImage, PDFPage } from "pdf-lib";
+import {
+  PDFDocument,
+  PDFImage,
+  PDFPage,
+  StandardFonts,
+  PDFFont,
+} from "pdf-lib";
 import type { ElementType } from "src/ElementType";
 
 export async function templateToPDF(template: Template): Promise<Uint8Array> {
@@ -8,8 +14,6 @@ export async function templateToPDF(template: Template): Promise<Uint8Array> {
       const page = doc.addPage([artboard.width, artboard.height]);
       await Promise.all(
         template.elements.map((element) => {
-          console.log("element.y:", element.y);
-          console.log('artboard.height:', artboard.height)
           const modifiedElement = {
             ...element,
             y: artboard.height - element.y - element.height, // PDF Y = 0 at the bottom
@@ -62,13 +66,30 @@ const elementRenderer: Record<
   },
   text: function renderText({ page, element, doc }) {
     const textElement = element as TextDesignElement;
-    console.log("element.y:", element.y);
-    page.drawText(textElement.content, {
-      x: element.x,
-      y: element.y,
-      // size: element.fontSize,
-      // font: doc.embedStandardFont(element.fontFamily),
-      // color: element.color,
+    const font = doc.embedStandardFont(StandardFonts.Helvetica);
+    const fontSize = 16;
+    const textLines = [];
+    const lastLine = textElement.content.split("").reduce((line, char) => {
+      const newLine = line + char;
+      const textWidth = font.widthOfTextAtSize(newLine, fontSize);
+      if (textWidth > textElement.width) {
+        // text exceeds box so start with a new line
+        textLines.push(newLine);
+        return "";
+      }
+      return newLine;
+    }, "");
+    textLines.push(lastLine);
+
+    textLines.forEach((line, index) => {
+      const lineNr = index + 1;
+      console.log("lineNr:", lineNr);
+      page.drawText(line, {
+        x: element.x,
+        y: element.y + element.height - fontSize * lineNr,
+        size: fontSize,
+        font,
+      });
     });
   },
 };
