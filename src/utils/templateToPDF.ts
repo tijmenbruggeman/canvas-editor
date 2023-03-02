@@ -83,7 +83,6 @@ const elementRenderer: Record<
 
     textLines.forEach((line, index) => {
       const lineNr = index + 1;
-      console.log("lineNr:", lineNr);
       page.drawText(line, {
         x: element.x,
         y: element.y + element.height - fontSize * lineNr,

@@ -1,3 +1,9 @@
+<style>
+.toolbar-addfile {
+  display: none;
+}
+</style>
+
 <script lang="ts">
 import AddPhotoAlternate from "./icons/add_photo_alternate.svg?component";
 import { addElement } from "./storeEdits";
@@ -24,7 +30,6 @@ function onUpload() {
   reader.readAsDataURL(file);
 }
 </script>
-
 
 <label class="toolbar-button" for="addfile">
   <AddPhotoAlternate width="24" height="24" />

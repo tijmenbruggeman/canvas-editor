@@ -6,7 +6,7 @@
   width: 100%;
   bottom: 12px;
 }
-.toolbar {
+.toolbar-wrapper :global(.toolbar) {
   display: flex;
   padding: 4px 16px;
   background-color: var(--toolbar-bg);
@@ -15,9 +15,10 @@
     13.9px 13.9px 34.1px -12px rgba(0, 0, 0, 0.046),
     46px 46px 113px -12px rgba(0, 0, 0, 0.07);
   border-radius: 24px;
-  border: 1px solid rgba(0,0,0,.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
-.toolbar-button {
+
+.toolbar-wrapper :global(.toolbar-button) {
   width: 48px;
   height: 48px;
   margin: 4px;
@@ -31,73 +32,17 @@
   border: none;
   background: none;
 }
-.toolbar-button-text {
+.toolbar-wrapper :global(.toolbar-button-text) {
   font-size: 11px;
   opacity: 0.5;
   margin-top: 4px;
 }
-.toolbar-addfile-input {
-  display: none;
-}
 </style>
 
 <script lang="ts">
-import AddPhotoAlternate from "./icons/add_photo_alternate.svg?component";
-import Download from "./icons/download.svg?component";
-import Shapes from "./icons/shapes.svg?component";
-import Text from "./icons/text.svg?component";
-import { addElement } from "./storeEdits";
-import { artboards, downloadFile } from "./storeWorkspace";
-
-let input;
-function onUpload() {
-  const file = input.files[0];
-  const reader = new FileReader();
-  reader.addEventListener("load", function () {
-    const image: any = new Image();
-    image.src = reader.result;
-    image.onload = function () {
-      const { width, height } = this;
-      addElement({
-        type: "img",
-        artboard: $artboards[0].id,
-        src: image.src,
-        height,
-        width,
-      });
-    };
-  });
-  reader.readAsDataURL(file);
-}
+import ToolbarDefault from "./ToolbarDefault.svelte";
 </script>
 
 <div class="toolbar-wrapper">
-  <div class="toolbar">
-    <label class="toolbar-button" for="addfile">
-      <AddPhotoAlternate width="24" height="24" />
-      <span class="toolbar-button-text">Afbeelding</span>
-    </label>
-    <button class="toolbar-button" for="addtext">
-      <Text width="24" height="24" />
-      <span class="toolbar-button-text">Text</span>
-    </button>
-    <button class="toolbar-button" for="addshape">
-      <Shapes width="24" height="24" />
-      <span class="toolbar-button-text">Vormen</span>
-    </button>
-    <button class="toolbar-button" on:click="{downloadFile}">
-      <Download width="24" height="24" />
-      <span class="toolbar-button-text">Download</span>
-    </button>
-
-    <div class="toolbar-addfile">
-      <input
-        bind:this="{input}"
-        id="addfile"
-        on:change="{onUpload}"
-        accept="image/png, image/jpeg"
-        class="toolbar-addfile-input"
-        type="file" />
-    </div>
-  </div>
+  <ToolbarDefault />
 </div>
