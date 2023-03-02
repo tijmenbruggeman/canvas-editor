@@ -9,7 +9,7 @@
   display: inline;
   width: 100%;
 }
-.element-text[contenteditable] {
+.element-text-editor[contenteditable] {
   cursor: text;
   outline: none;
 }
