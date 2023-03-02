@@ -1,5 +1,6 @@
 import { v4 } from "uuid";
 import { writable } from "svelte/store";
+import { setToolbarType } from "./storeWorkspace";
 
 type EditAction = {
   type: string;
@@ -67,6 +68,7 @@ function commitAction(action: EditAction) {
 }
 
 function clearSelected() {
+  setToolbarType();
   selection.set(initalSelection);
 }
 

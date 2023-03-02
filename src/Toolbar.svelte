@@ -41,8 +41,18 @@
 
 <script lang="ts">
 import ToolbarDefault from "./ToolbarDefault.svelte";
+import { toolbarType } from "./storeWorkspace";
+import { ToolbarType } from "./ToolbarType";
+import ToolbarText from "./ToolbarText.svelte";
 </script>
 
 <div class="toolbar-wrapper">
-  <ToolbarDefault />
+  <div class="toolbar">
+    {#if !$toolbarType}
+      <ToolbarDefault />
+    {/if}
+    {#if $toolbarType === ToolbarType.Text}
+      <ToolbarText />
+    {/if}
+  </div>
 </div>
