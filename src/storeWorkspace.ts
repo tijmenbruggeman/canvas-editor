@@ -1,14 +1,26 @@
 import { get, writable } from "svelte/store";
-import type { ElementType } from "./ElementType";
+import {
+  ArtboardSettings,
+  ElementType,
+  ElementTypes,
+  Template,
+  ToolbarType,
+  ToolbarTypes,
+} from "../types/visualeditor";
 import { elements } from "./storeEdits";
 import { downloadByteArray } from "./utils/downloadByteArray";
 import { templateToPDF } from "./utils/templateToPDF";
 
 const artboards = writable<Array<ArtboardSettings>>([]);
-const toolbarType = writable<ElementType | undefined>(undefined);
+const toolbarType = writable<ToolbarType | undefined>(undefined);
 
-function setToolbarType(type?: ElementType) {
+function setToolbarType(type?: ToolbarType) {
   toolbarType.set(type);
+}
+function setToolbarByElement(elType: ElementType) {
+  if (elType === ElementTypes.text) {
+    setToolbarType(ToolbarTypes.text);
+  }
 }
 
 export async function downloadFile() {
@@ -20,4 +32,4 @@ export async function downloadFile() {
   const pdfBytes = await templateToPDF(template);
   downloadByteArray(pdfBytes, "test.pdf");
 }
-export { artboards, toolbarType, setToolbarType };
+export { artboards, toolbarType, setToolbarType, setToolbarByElement };

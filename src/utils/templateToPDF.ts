@@ -5,7 +5,13 @@ import {
   StandardFonts,
   PDFFont,
 } from "pdf-lib";
-import type { ElementType } from "src/ElementType";
+import type {
+  AnyDesignElement,
+  ElementType,
+  ImgDesignElement,
+  Template,
+  TextDesignElement,
+} from "../../types/visualeditor";
 
 export async function templateToPDF(template: Template): Promise<Uint8Array> {
   const doc = await PDFDocument.create({});
@@ -36,7 +42,7 @@ interface RenderBase {
   doc: PDFDocument;
 }
 interface RenderImageParams extends RenderBase {
-  element: ImgDesignElement | TextDesignElement;
+  element: AnyDesignElement;
 }
 const elementRenderer: Record<
   ElementType,

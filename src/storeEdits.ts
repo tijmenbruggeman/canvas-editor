@@ -1,6 +1,7 @@
 import { v4 } from "uuid";
 import { writable } from "svelte/store";
 import { setToolbarType } from "./storeWorkspace";
+import type { AnyDesignElement, DesignElement } from "../types/visualeditor";
 
 type EditAction = {
   type: string;

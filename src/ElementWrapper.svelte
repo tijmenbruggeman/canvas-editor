@@ -11,14 +11,15 @@
 </style>
 
 <script lang="ts">
+import type { DesignElement } from "../types/visualeditor";
 import { selection } from "./storeEdits";
-import { setToolbarType } from "./storeWorkspace";
+import { setToolbarByElement } from "./storeWorkspace";
 import { objectToStyle } from "./utils/objectToStyle";
 
 export let element: DesignElement;
 
 function selectElement() {
-  setToolbarType(element.type);
+  setToolbarByElement(element.type);
   selection.set({
     height: element.height,
     width: element.width,
