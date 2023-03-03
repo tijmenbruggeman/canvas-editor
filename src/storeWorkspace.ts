@@ -14,13 +14,15 @@ import { templateToPDF } from "./utils/templateToPDF";
 const artboards = writable<Array<ArtboardSettings>>([]);
 const toolbarType = writable<ToolbarType | undefined>(undefined);
 
-function setToolbarType(type?: ToolbarType) {
+function setToolbarType(type?: ToolbarType): void {
   toolbarType.set(type);
 }
-function setToolbarByElement(elType: ElementType) {
+function setToolbarByElement(elType: ElementType): void {
   if (elType === ElementTypes.text) {
     setToolbarType(ToolbarTypes.text);
+    return;
   }
+  setToolbarType();
 }
 
 export async function downloadFile() {
