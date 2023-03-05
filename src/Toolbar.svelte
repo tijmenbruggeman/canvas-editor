@@ -41,6 +41,7 @@
 
 <script lang="ts">
 import ToolbarDefault from "./ToolbarDefault.svelte";
+import ToolbarColor from "./ToolbarColor.svelte";
 import { toolbarType } from "./storeWorkspace";
 import ToolbarText from "./ToolbarText.svelte";
 import { ToolbarTypes } from "../types/visualeditor";
@@ -53,6 +54,9 @@ import { ToolbarTypes } from "../types/visualeditor";
     {/if}
     {#if $toolbarType === ToolbarTypes.text}
       <ToolbarText />
+    {/if}
+    {#if $toolbarType === ToolbarTypes.color}
+      <ToolbarColor />
     {/if}
   </div>
 </div>
