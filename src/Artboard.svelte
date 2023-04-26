@@ -2,7 +2,7 @@
 .artboard {
   box-shadow: 0 2px 8px rgb(14 19 24 / 7%);
   background-color: var(--artboard-bg-light);
-  margin: auto;
+  margin: 0 auto;
 }
 </style>
 
@@ -13,6 +13,7 @@ import SelectedFrame from "./SelectedFrame.svelte";
 export let artboardSettings: ArtboardSettings;
 
 function onDragStart(e) {
+  console.log(e.offsetTop, e.offsetLeft);
   const hasClickedArtboard = this === e.target;
   const startX = e.pageX;
   const startY = e.pageY;

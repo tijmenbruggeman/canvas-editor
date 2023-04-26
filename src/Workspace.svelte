@@ -1,6 +1,7 @@
 <style>
 .workspace {
   background-color: var(--workspace-bg-light);
+  padding: 20px 0;
 }
 </style>
 

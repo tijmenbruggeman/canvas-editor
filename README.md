@@ -1,9 +1,14 @@
 # Canvas Editor
+
 Canvas editor is an 2D design tool inspired by Canva, Adobe Spark & Snappa. Embed the script, assign the div and provide templates. It will export a PDF ready for printing.
 
-[] Move elements
+## LOG
 
+- Snapping
+- - Snap to sides
+- - Snap to centers
+- - Snap to other elements
 
-// move 
-// // move selected elements to position
-// // 
+- Rotate
+- Delete
+- Resize maintain aspect ratio
