@@ -2,7 +2,7 @@
 .toolbar-wrapper {
   display: flex;
   justify-content: center;
-  position: fixed;
+  position: absolute;
   width: 100%;
   bottom: 12px;
 }

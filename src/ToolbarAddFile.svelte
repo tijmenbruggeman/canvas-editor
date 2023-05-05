@@ -7,7 +7,7 @@
 <script lang="ts">
 import AddPhotoAlternate from "./icons/add_photo_alternate.svg?component";
 import { addElement } from "./storeEdits";
-import { artboards } from "./storeWorkspace";
+import { artboard } from "./storeWorkspace";
 
 let input;
 function onUpload() {
@@ -20,7 +20,7 @@ function onUpload() {
       const { width, height } = this;
       addElement({
         type: "img",
-        artboard: $artboards[0].id,
+        artboard: $artboard.id,
         src: image.src,
         height,
         width,

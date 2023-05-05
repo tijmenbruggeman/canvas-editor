@@ -1,6 +1,6 @@
 export type Template = {
   elements: Array<DesignElement>;
-  artboards: Array<ArtboardSettings>;
+  artboard: ArtboardSettings;
 };
 
 export declare const PRODUCT_VISUAL_EDITOR_TEMPLATE: Template | undefined;
@@ -46,9 +46,6 @@ export type ArtboardSettings = {
   width: number;
   height: number;
   id: string;
-  editAreas: Array<EditArea>;
-  dragX: number;
-  dragY: number;
 };
 
 export type EditArea = {

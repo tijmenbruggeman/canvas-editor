@@ -7,13 +7,11 @@
 
 <script lang="ts">
 import Artboard from "./Artboard.svelte";
-import { artboards } from "./storeWorkspace";
+import { artboard } from "./storeWorkspace";
 import Toolbar from "./Toolbar.svelte";
 </script>
 
 <div class="workspace">
-  {#each $artboards as artboard}
-    <Artboard artboardSettings="{artboard}" />
-  {/each}
+  <Artboard artboardSettings="{$artboard}" />
   <Toolbar />
 </div>

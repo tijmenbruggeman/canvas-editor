@@ -11,7 +11,13 @@ import { elements } from "./storeEdits";
 import { downloadByteArray } from "./utils/downloadByteArray";
 import { templateToPDF } from "./utils/templateToPDF";
 
-const artboards = writable<Array<ArtboardSettings>>([]);
+const defaultArtboard: ArtboardSettings = {
+  width: 800,
+  height: 600,
+  scale: 1,
+  id: "default",
+};
+const artboard = writable<ArtboardSettings>(defaultArtboard);
 const toolbarType = writable<ToolbarType | undefined>(undefined);
 
 function setToolbarType(type?: ToolbarType): void {
@@ -28,10 +34,9 @@ function setToolbarByElement(elType: ElementType): void {
 export async function downloadFile() {
   const template: Template = {
     elements: get(elements),
-    artboards: get(artboards),
-    scale: 1,
+    artboard: get(artboard),
   };
   const pdfBytes = await templateToPDF(template);
   downloadByteArray(pdfBytes, "test.pdf");
 }
-export { artboards, toolbarType, setToolbarType, setToolbarByElement };
+export { artboard, toolbarType, setToolbarType, setToolbarByElement };

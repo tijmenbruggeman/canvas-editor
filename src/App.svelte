@@ -27,12 +27,13 @@
 .editor {
   height: 100%;
   width: 100%;
+  position: relative;
 }
 </style>
 
 <script lang="ts">
 import { v4 } from "uuid";
-import { artboards } from "./storeWorkspace";
+import { artboard } from "./storeWorkspace";
 import { elements } from "./storeEdits";
 
 import Workspace from "./Workspace.svelte";
@@ -40,8 +41,8 @@ import type { Template } from "../types/visualeditor";
 
 let editor: HTMLDivElement;
 
-function calculateScale({ artboards }: Template) {
-  const { width: templateWidth } = artboards[0];
+function calculateScale({ artboard }: Template) {
+  const { width: templateWidth } = artboard;
   const { width } = editor.getBoundingClientRect();
 
   // template should fit 90% of editor
@@ -54,8 +55,8 @@ function loadTemplate(event: CustomEvent<{ template: Template }>) {
   const template = event.detail.template;
   if (!template) return;
   const scale = calculateScale(template);
-  template.artboards[0].scale = scale;
-  artboards.set(template.artboards);
+  template.artboard.scale = scale;
+  artboard.set(template.artboard);
   const initialElements = template.elements.map((e) => ({
     ...e,
     id: v4(),
