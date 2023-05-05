@@ -3,6 +3,8 @@
   box-shadow: 0 2px 8px rgb(14 19 24 / 7%);
   background-color: var(--artboard-bg-light);
   margin: 0 auto;
+  transform-origin: left;
+  margin-left: 5%;
 }
 </style>
 
@@ -10,10 +12,10 @@
 import { elements, clearSelected, startMove } from "./storeEdits";
 import ElementBase from "./ElementBase.svelte";
 import SelectedFrame from "./SelectedFrame.svelte";
+import type { ArtboardSettings } from "../types/visualeditor";
 export let artboardSettings: ArtboardSettings;
 
 function onDragStart(e) {
-  console.log(e.offsetTop, e.offsetLeft);
   const hasClickedArtboard = this === e.target;
   const startX = e.pageX;
   const startY = e.pageY;
@@ -51,7 +53,7 @@ function onDragStart(e) {
 
 <div
   class="artboard"
-  style="width: {artboardSettings.width}px; height: {artboardSettings.height}px;"
+  style="width: {artboardSettings.width}px; height: {artboardSettings.height}px; transform: scale({artboardSettings.scale}"
   on:mousedown="{onDragStart}">
   {#each $elements as element}
     <ElementBase element="{element}" />

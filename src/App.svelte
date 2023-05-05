@@ -26,6 +26,7 @@
 }
 .editor {
   height: 100%;
+  width: 100%;
 }
 </style>
 
@@ -35,10 +36,25 @@ import { artboards } from "./storeWorkspace";
 import { elements } from "./storeEdits";
 
 import Workspace from "./Workspace.svelte";
+import type { Template } from "../types/visualeditor";
 
-export let template: Template;
+let editor: HTMLDivElement;
 
-if (template) {
+function calculateScale({ artboards }: Template) {
+  const { width: templateWidth } = artboards[0];
+  const { width } = editor.getBoundingClientRect();
+
+  // template should fit 90% of editor
+  const editorWidth = width * 0.9;
+  const scale = Math.min(editorWidth / templateWidth);
+  return scale;
+}
+
+function loadTemplate(event: CustomEvent<{ template: Template }>) {
+  const template = event.detail.template;
+  if (!template) return;
+  const scale = calculateScale(template);
+  template.artboards[0].scale = scale;
   artboards.set(template.artboards);
   const initialElements = template.elements.map((e) => ({
     ...e,
@@ -46,8 +62,9 @@ if (template) {
   }));
   elements.set(initialElements);
 }
+window.addEventListener("cve-loadtemplate", loadTemplate);
 </script>
 
-<div class="editor">
+<div class="editor" bind:this="{editor}">
   <Workspace />
 </div>

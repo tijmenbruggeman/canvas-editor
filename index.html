@@ -7,20 +7,29 @@
     <title>Vite + Svelte + TS</title>
   </head>
   <body>
-    <div id="js-canvas-editor"></div>
+    <div id="js-canvas-editor" style="width: 100vw"></div>
+    <button onclick="loadtemplate();">test</button>
     <script>
+      function loadtemplate() {
+        const event = new CustomEvent("cve-loadtemplate", {
+          detail: {
+            template: PRODUCT_VISUAL_EDITOR_TEMPLATE,
+          },
+        });
+        window.dispatchEvent(event);
+      }
       const PRODUCT_VISUAL_EDITOR_TEMPLATE = {
         elements: [
           {
             type: "img",
-            width: 300,
+            width: 600,
             height: 300,
             x: 20,
             y: 20,
             zoom: 1,
             index: 1,
             artboard: "e6f712a3-57dd-48fc-af9c-762f45d05a0a",
-            src: "https://picsum.photos/200",
+            src: "https://picsum.photos/600",
           },
           {
             type: "text",
@@ -35,17 +44,9 @@
         ],
         artboards: [
           {
-            width: 1200,
-            height: 1200,
+            width: 2500,
+            height: 1000,
             id: "e6f712a3-57dd-48fc-af9c-762f45d05a0a",
-            editAreas: [
-              {
-                width: 1200,
-                height: 1200,
-                x: 0,
-                y: 0,
-              },
-            ],
           },
         ],
         scale: 1,

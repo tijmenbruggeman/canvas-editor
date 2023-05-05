@@ -1,6 +1,6 @@
 import { v4 } from "uuid";
-import { writable } from "svelte/store";
-import { setToolbarType } from "./storeWorkspace";
+import { get, writable } from "svelte/store";
+import { artboards, setToolbarType } from "./storeWorkspace";
 import type { AnyDesignElement, DesignElement } from "../types/visualeditor";
 
 type EditAction = {
@@ -90,6 +90,12 @@ function startMove() {
   const { x: elementX, y: elementY } = $elements[elementIndex];
   return {
     moveSelection: function moveSelection({ moveX, moveY }) {
+      // TODO: check for collision with sides
+      const newX = $elements[elementIndex].x + moveX;
+
+      // TODO: check for collision with other elements
+      // TODO: check for collision with centers
+
       elements.update((e) => {
         // Currently multi-select is not possible
         // so no no need to update all elements

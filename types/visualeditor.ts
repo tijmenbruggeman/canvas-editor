@@ -1,7 +1,6 @@
 export type Template = {
   elements: Array<DesignElement>;
   artboards: Array<ArtboardSettings>;
-  scale: number;
 };
 
 export declare const PRODUCT_VISUAL_EDITOR_TEMPLATE: Template | undefined;
@@ -43,6 +42,7 @@ export type SelectedElement = {
 };
 
 export type ArtboardSettings = {
+  scale: number;
   width: number;
   height: number;
   id: string;
