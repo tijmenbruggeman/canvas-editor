@@ -2,7 +2,7 @@
 import Download from "./icons/download.svg?component";
 import Shapes from "./icons/shapes.svg?component";
 import Text from "./icons/text.svg?component";
-import { downloadFile } from "./storeWorkspace";
+import { downloadFile } from "./modules/downloadFile";
 import ToolbarAddFile from "./ToolbarAddFile.svelte";
 </script>
 

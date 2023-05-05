@@ -1,7 +1,11 @@
 import { v4 } from "uuid";
-import { get, writable } from "svelte/store";
-import { artboards, setToolbarType } from "./storeWorkspace";
-import type { AnyDesignElement, DesignElement } from "../types/visualeditor";
+import { writable } from "svelte/store";
+import { setToolbarType } from "./storeWorkspace";
+import type {
+  AnyDesignElement,
+  ArtboardSettings,
+  DesignElement,
+} from "../types/visualeditor";
 
 type EditAction = {
   type: string;
@@ -24,6 +28,14 @@ const initalSelection = {
   height: 0,
 };
 
+const defaultArtboard: ArtboardSettings = {
+  width: 800,
+  height: 600,
+  scale: 1,
+  id: "default",
+};
+
+const artboard = writable<ArtboardSettings>(defaultArtboard);
 const actions = writable<Array<EditAction>>([]);
 const elements = writable<Array<DesignElement>>([]);
 const selection = writable<Selection>(initalSelection);
@@ -92,6 +104,7 @@ function startMove() {
     moveSelection: function moveSelection({ moveX, moveY }) {
       // TODO: check for collision with sides
       const newX = $elements[elementIndex].x + moveX;
+      console.log(artboard);
 
       // TODO: check for collision with other elements
       // TODO: check for collision with centers
@@ -185,6 +198,7 @@ export {
   elements,
   actions,
   selection,
+  artboard,
   commitAction,
   clearSelected,
   editSelected,

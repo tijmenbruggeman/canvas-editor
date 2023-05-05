@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import Artboard from "./Artboard.svelte";
-import { artboard } from "./storeWorkspace";
+import { artboard } from "./storeEdits";
 import Toolbar from "./Toolbar.svelte";
 </script>
 

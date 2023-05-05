@@ -1,10 +1,4 @@
-import {
-  PDFDocument,
-  PDFImage,
-  PDFPage,
-  StandardFonts,
-  PDFFont,
-} from "pdf-lib";
+import { PDFDocument, PDFImage, PDFPage, StandardFonts } from "pdf-lib";
 import type {
   AnyDesignElement,
   ElementType,
@@ -15,22 +9,19 @@ import type {
 
 export async function templateToPDF(template: Template): Promise<Uint8Array> {
   const doc = await PDFDocument.create({});
+  const { artboard } = template;
+  const page = doc.addPage([artboard.width, artboard.height]);
   await Promise.all(
-    template.artboards.map(async (artboard) => {
-      const page = doc.addPage([artboard.width, artboard.height]);
-      await Promise.all(
-        template.elements.map((element) => {
-          const modifiedElement = {
-            ...element,
-            y: artboard.height - element.y - element.height, // PDF Y = 0 at the bottom
-          };
-          return elementRenderer[element.type]({
-            element: modifiedElement,
-            page,
-            doc,
-          });
-        })
-      );
+    template.elements.map((element) => {
+      const modifiedElement = {
+        ...element,
+        y: artboard.height - element.y - element.height, // PDF Y = 0 at the bottom
+      };
+      return elementRenderer[element.type]({
+        element: modifiedElement,
+        page,
+        doc,
+      });
     })
   );
   const pdfBytes = await doc.save();

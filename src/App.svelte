@@ -33,8 +33,7 @@
 
 <script lang="ts">
 import { v4 } from "uuid";
-import { artboard } from "./storeWorkspace";
-import { elements } from "./storeEdits";
+import { artboard, elements } from "./storeEdits";
 
 import Workspace from "./Workspace.svelte";
 import type { Template } from "../types/visualeditor";

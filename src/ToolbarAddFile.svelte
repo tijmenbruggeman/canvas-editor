@@ -6,8 +6,7 @@
 
 <script lang="ts">
 import AddPhotoAlternate from "./icons/add_photo_alternate.svg?component";
-import { addElement } from "./storeEdits";
-import { artboard } from "./storeWorkspace";
+import { artboard, addElement } from "./storeEdits";
 
 let input;
 function onUpload() {
