@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { get, writable } from "svelte/store";
+import { writable } from "svelte/store";
 import { setToolbarType } from "./storeWorkspace";
 import type {
   AnyDesignElement,
