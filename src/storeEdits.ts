@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { setToolbarType } from "./storeWorkspace";
 import type {
   AnyDesignElement,
@@ -50,6 +50,11 @@ selection.subscribe((e) => {
   $selection = e;
 });
 
+let $artboard: ArtboardSettings = defaultArtboard;
+artboard.subscribe((newArtboard) => {
+  $artboard = newArtboard;
+});
+
 function commitAction(action: EditAction) {
   const [elementId] = $selection.ids;
   const elementIndex = $elements.findIndex(({ id }) => id === elementId);
@@ -95,45 +100,23 @@ function editSelected() {
   });
 }
 
-function startMove() {
-  const { width, ids, height, x, y } = $selection;
-  const [elementId] = ids;
-  const elementIndex = $elements.findIndex(({ id }) => id === elementId);
-  const { x: elementX, y: elementY } = $elements[elementIndex];
+interface TransformParams {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
+}
+function scaleMovement({ x, y, width, height }: TransformParams) {
   return {
-    moveSelection: function moveSelection({ moveX, moveY }) {
-      // TODO: check for collision with sides
-      const newX = $elements[elementIndex].x + moveX;
-      console.log(artboard);
-
-      // TODO: check for collision with other elements
-      // TODO: check for collision with centers
-
-      elements.update((e) => {
-        // Currently multi-select is not possible
-        // so no no need to update all elements
-        e[elementIndex].x = elementX + moveX;
-        e[elementIndex].y = elementY + moveY;
-        return e;
-      });
-      selection.set({
-        x: x + moveX,
-        y: y + moveY,
-        ids,
-        width,
-        height,
-      });
-    },
-    commitMove({ moveX, moveY }) {
-      commitAction({
-        attr: {
-          x: elementX + moveX,
-          y: elementY + moveY,
-        },
-        type: "move",
-      });
-    },
+    moveX: scaleValue(x, $artboard.scale),
+    moveY: scaleValue(y, $artboard.scale),
+    width: scaleValue(width, $artboard.scale),
+    height: scaleValue(height, $artboard.scale),
   };
+}
+
+function scaleValue(val: number, scale: number) {
+  return val ? val / scale : 0;
 }
 
 function startTransform() {
@@ -142,7 +125,9 @@ function startTransform() {
   const elementIndex = $elements.findIndex(({ id }) => id === elementId);
   const currentElement = { ...$elements[elementIndex] };
   return {
-    transformSelection({ moveX, moveY, width, height }) {
+    transformSelection(params: TransformParams) {
+      const { moveX, moveY, height, width } = scaleMovement(params);
+
       elements.update((e) => {
         // Currently multi-select is not possible
         // so no no need to update all elements
@@ -160,7 +145,8 @@ function startTransform() {
         height: currentSelection.height + height,
       });
     },
-    commitTransform({ moveX, moveY, width, height }) {
+    commitTransform(params: TransformParams) {
+      const { moveX, moveY, height, width } = scaleMovement(params);
       commitAction({
         attr: {
           x: currentElement.x + moveX,

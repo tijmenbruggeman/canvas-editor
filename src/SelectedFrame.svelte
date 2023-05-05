@@ -78,8 +78,8 @@ function onResizeStart(e, origin: TransformOrigins) {
 
   function transformDirection({ pageX, pageY }: TransformDirectionParams) {
     const change = {
-      moveX: 0,
-      moveY: 0,
+      x: 0,
+      y: 0,
       width: 0,
       height: 0,
     };
@@ -87,13 +87,13 @@ function onResizeStart(e, origin: TransformOrigins) {
       case "tr":
         change.height = startY - pageY;
         change.width = pageX - startX;
-        change.moveY = pageY - startY;
+        change.y = pageY - startY;
         break;
       case "tl":
         change.height = startY - pageY;
         change.width = startX - pageX;
-        change.moveX = pageX - startX;
-        change.moveY = pageY - startY;
+        change.x = pageX - startX;
+        change.y = pageY - startY;
         break;
       case "br":
         change.height = pageY - startY;
@@ -102,21 +102,21 @@ function onResizeStart(e, origin: TransformOrigins) {
       case "bl":
         change.height = pageY - startY;
         change.width = startX - pageX;
-        change.moveX = pageX - startX;
+        change.x = pageX - startX;
         break;
       case "b":
         change.height = pageY - startY;
         break;
       case "t":
         change.height = startY - pageY;
-        change.moveY = pageY - startY;
+        change.y = pageY - startY;
         break;
       case "r":
         change.width = pageX - startX;
         break;
       case "l":
         change.width = startX - pageX;
-        change.moveX = pageX - startX;
+        change.x = pageX - startX;
         break;
       default:
         throw new Error("undefined direction");

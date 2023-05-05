@@ -9,7 +9,12 @@
 </style>
 
 <script lang="ts">
-import { elements, clearSelected, startMove } from "./storeEdits";
+import {
+  elements,
+  clearSelected,
+  startMove,
+  startTransform,
+} from "./storeEdits";
 import ElementBase from "./ElementBase.svelte";
 import SelectedFrame from "./SelectedFrame.svelte";
 import type { ArtboardSettings } from "../types/visualeditor";
@@ -26,21 +31,21 @@ function onDragStart(e) {
     return;
   }
 
-  const { commitMove, moveSelection } = startMove();
+  const { commitTransform, transformSelection } = startTransform();
 
   function handleMouseMove(moveE) {
     moveX = moveE.pageX - startX;
     moveY = moveE.pageY - startY;
-    moveSelection({
-      moveX,
-      moveY,
+    transformSelection({
+      x: moveX,
+      y: moveY,
     });
   }
   function handleMouseUp(e) {
     const movedX = e.pageX - startX;
-    commitMove({
-      moveX: movedX,
-      moveY,
+    commitTransform({
+      x: movedX,
+      y: moveY,
     });
     removeEventListener("mousemove", handleMouseMove);
     removeEventListener("mouseup", handleMouseUp);
