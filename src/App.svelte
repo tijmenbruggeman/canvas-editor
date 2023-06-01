@@ -47,16 +47,21 @@ function calculateScale({ artboard }: Template) {
 
   // template should fit 90% of editor
   const editorWidth = width * 0.9;
+  const editorCenterX = width / 2;
+  const templateCenterX = templateWidth / 2;
+  const offsetX = templateCenterX - editorCenterX;
   const scale = Math.min(editorWidth / templateWidth);
-  return scale;
+  return { scale, offsetX };
 }
 
 function loadTemplate(event: CustomEvent<{ template: string }>) {
   const template = event.detail.template;
   if (!template) return;
   const decodedTemplate = JSON.parse(window.atob(template)) as Template;
-  const scale = calculateScale(decodedTemplate);
+  const { scale, offsetX } = calculateScale(decodedTemplate);
   decodedTemplate.artboard.scale = scale;
+  decodedTemplate.artboard.offsetX = offsetX;
+  decodedTemplate.artboard.offsetY = 0;
   artboard.set(decodedTemplate.artboard);
   const initialElements = decodedTemplate.elements.map((e) => ({
     ...e,

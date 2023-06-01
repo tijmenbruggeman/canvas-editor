@@ -52,7 +52,7 @@ function onDragStart(e) {
 
 <div
   class="artboard"
-  style="width: {artboardSettings.width}px; height: {artboardSettings.height}px; transform: scale({artboardSettings.scale}"
+  style="width: {artboardSettings.width}px; height: {artboardSettings.height}px; transform: translateX({-artboardSettings.offsetX}px) scale({artboardSettings.scale});"
   on:mousedown="{onDragStart}">
   {#each $elements as element}
     <ElementBase element="{element}" />

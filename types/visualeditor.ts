@@ -43,6 +43,8 @@ export type SelectedElement = {
 
 export type ArtboardSettings = {
   scale: number;
+  offsetX: number;
+  offsetY: number;
   width: number;
   height: number;
   id: string;
