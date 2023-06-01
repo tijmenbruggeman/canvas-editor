@@ -51,19 +51,20 @@ function calculateScale({ artboard }: Template) {
   return scale;
 }
 
-function loadTemplate(event: CustomEvent<{ template: Template }>) {
+function loadTemplate(event: CustomEvent<{ template: string }>) {
   const template = event.detail.template;
   if (!template) return;
-  const scale = calculateScale(template);
-  template.artboard.scale = scale;
-  artboard.set(template.artboard);
-  const initialElements = template.elements.map((e) => ({
+  const decodedTemplate = JSON.parse(window.atob(template)) as Template;
+  const scale = calculateScale(decodedTemplate);
+  decodedTemplate.artboard.scale = scale;
+  artboard.set(decodedTemplate.artboard);
+  const initialElements = decodedTemplate.elements.map((e) => ({
     ...e,
     id: v4(),
   }));
   elements.set(initialElements);
 }
-window.addEventListener("cve-loadtemplate", loadTemplate);
+window.addEventListener("pdc-loadtemplate", loadTemplate);
 </script>
 
 <div class="editor" bind:this="{editor}">

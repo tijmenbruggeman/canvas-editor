@@ -7,48 +7,50 @@
     <title>Vite + Svelte + TS</title>
   </head>
   <body>
-    <div id="js-canvas-editor" style="width: 100vw"></div>
+    <div id="pdc-js-editor" style="width: 100vw"></div>
     <button onclick="loadtemplate();">test</button>
     <script>
       function loadtemplate() {
-        const event = new CustomEvent("cve-loadtemplate", {
+        const event = new CustomEvent("pdc-loadtemplate", {
           detail: {
             template: PRODUCT_VISUAL_EDITOR_TEMPLATE,
           },
         });
         window.dispatchEvent(event);
       }
-      const PRODUCT_VISUAL_EDITOR_TEMPLATE = {
-        elements: [
-          {
-            type: "img",
-            width: 600,
-            height: 300,
-            x: 20,
-            y: 20,
-            zoom: 1,
-            index: 1,
-            artboard: "e6f712a3-57dd-48fc-af9c-762f45d05a0a",
-            src: "https://picsum.photos/600",
+      const PRODUCT_VISUAL_EDITOR_TEMPLATE = window.btoa(
+        JSON.stringify({
+          elements: [
+            {
+              type: "img",
+              width: 600,
+              height: 300,
+              x: 20,
+              y: 20,
+              zoom: 1,
+              index: 1,
+              artboard: "e6f712a3-57dd-48fc-af9c-762f45d05a0a",
+              src: "https://picsum.photos/600",
+            },
+            {
+              type: "text",
+              width: 300,
+              height: 200,
+              x: 20,
+              y: 20,
+              zoom: 1,
+              artboard: "e6f712a3-57dd-48fc-af9c-762f45d05a0a",
+              content: "TextElement",
+            },
+          ],
+          artboard: {
+            width: 2500,
+            height: 1000,
+            id: "e6f712a3-57dd-48fc-af9c-762f45d05a0a",
           },
-          {
-            type: "text",
-            width: 300,
-            height: 200,
-            x: 20,
-            y: 20,
-            zoom: 1,
-            artboard: "e6f712a3-57dd-48fc-af9c-762f45d05a0a",
-            content: "TextElement",
-          },
-        ],
-        artboard: {
-          width: 2500,
-          height: 1000,
-          id: "e6f712a3-57dd-48fc-af9c-762f45d05a0a",
-        },
-        scale: 1,
-      };
+          scale: 1,
+        })
+      );
     </script>
     <script type="module" src="/src/main.ts"></script>
   </body>

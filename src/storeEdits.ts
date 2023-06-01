@@ -188,7 +188,6 @@ export {
   commitAction,
   clearSelected,
   editSelected,
-  startMove,
   startTransform,
   addElement,
 };
