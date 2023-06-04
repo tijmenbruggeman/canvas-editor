@@ -33,12 +33,22 @@ const defaultArtboard: ArtboardSettings = {
   height: 600,
   scale: 1,
   id: "default",
+  offsetX: 0,
+  offsetY: 0,
 };
 
 const artboard = writable<ArtboardSettings>(defaultArtboard);
 const actions = writable<Array<EditAction>>([]);
 const elements = writable<Array<DesignElement>>([]);
 const selection = writable<Selection>(initalSelection);
+const guides = writable<Array<Guide>>([]);
+
+type Guide = {
+  display: boolean;
+  type: "center" | "edge";
+  orientation: "horizontal" | "vertical";
+  position: number;
+};
 
 let $elements: Array<DesignElement> = [];
 elements.subscribe((e) => {
@@ -127,7 +137,7 @@ function startTransform() {
   return {
     transformSelection(params: TransformParams) {
       const { moveX, moveY, height, width } = scaleMovement(params);
-
+      console.log("check collision ");
       elements.update((e) => {
         // Currently multi-select is not possible
         // so no no need to update all elements
