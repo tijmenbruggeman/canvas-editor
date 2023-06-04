@@ -83,26 +83,59 @@ function onResizeStart(e, origin: TransformOrigins) {
       width: 0,
       height: 0,
     };
+
     switch (origin) {
       case "tr":
-        change.height = startY - pageY;
-        change.width = pageX - startX;
-        change.y = pageY - startY;
+        const trMovementX = pageX - startX;
+        const trMovementY = startY - pageY;
+        if (trMovementY < trMovementX) {
+          change.height = startY - pageY;
+          change.y = pageY - startY;
+          change.width = (startY - pageY) * aspectRatio;
+        } else {
+          change.width = pageX - startX;
+          change.height = (pageX - startX) / aspectRatio;
+          change.y = (startX - pageX) / aspectRatio;
+        }
         break;
       case "tl":
-        change.height = startY - pageY;
-        change.width = startX - pageX;
-        change.x = pageX - startX;
-        change.y = pageY - startY;
+        const tlMovementX = pageX - startX;
+        const tlMovementY = pageY - startY;
+        if (tlMovementY > tlMovementX) {
+          change.height = startY - pageY;
+          change.y = pageY - startY;
+          change.width = (startY - pageY) * aspectRatio;
+          change.x = (pageY - startY) * aspectRatio;
+        } else {
+          change.width = startX - pageX;
+          change.x = pageX - startX;
+          change.height = (startX - pageX) / aspectRatio;
+          change.y = (pageX - startX) / aspectRatio;
+        }
         break;
       case "br":
-        change.height = pageY - startY;
-        change.width = pageX - startX;
+        const brMovementY = pageY - startY;
+        const brMovementX = pageX - startX;
+        if (brMovementY > brMovementX) {
+          change.height = brMovementY;
+          change.width = brMovementY * aspectRatio;
+        } else {
+          change.height = brMovementX / aspectRatio;
+          change.width = brMovementX;
+        }
         break;
       case "bl":
-        change.height = pageY - startY;
-        change.width = startX - pageX;
-        change.x = pageX - startX;
+        const blMovementY = Math.abs(startY - pageY);
+        const blMovementX = Math.abs(startX - pageX);
+        if (blMovementY > blMovementX) {
+          change.height = pageY - startY;
+          change.width = (pageY - startY) * aspectRatio;
+          change.x = (startY - pageY) * aspectRatio;
+        } else {
+          change.height = (startX - pageX) / aspectRatio;
+          change.width = startX - pageX;
+          change.x = pageX - startX;
+        }
         break;
       case "b":
         change.height = pageY - startY;
@@ -136,8 +169,9 @@ function onResizeStart(e, origin: TransformOrigins) {
   addEventListener("mousemove", handleMouseMove);
   addEventListener("mouseup", handleMouseUp);
 }
-
+let aspectRatio = 0;
 const unsubscribe = selection.subscribe(({ x, y, width, height }) => {
+  aspectRatio = width / height;
   if (width === 0 && height === 0) {
     cssStyle = objectToStyle({
       display: "none",
