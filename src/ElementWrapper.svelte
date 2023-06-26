@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import type { DesignElement } from "../types/visualeditor";
-import { selection } from "./storeEdits";
+import { setSelected } from "./storeEdits";
 import { setToolbarByElement } from "./storeWorkspace";
 import { objectToStyle } from "./utils/objectToStyle";
 
@@ -20,11 +20,8 @@ export let element: DesignElement;
 
 function selectElement() {
   setToolbarByElement(element.type);
-  selection.set({
-    height: element.height,
-    width: element.width,
-    x: element.x,
-    y: element.y,
+  setSelected({
+    ...element,
     ids: [element.id],
   });
 }

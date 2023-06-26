@@ -2,8 +2,6 @@
 .artboard {
   box-shadow: 0 2px 8px rgb(14 19 24 / 7%);
   background-color: var(--artboard-bg-light);
-  margin: 0 auto;
-  transform-origin: center;
 }
 </style>
 
@@ -12,6 +10,7 @@ import { elements, clearSelected, startTransform } from "./storeEdits";
 import ElementBase from "./ElementBase.svelte";
 import SelectedFrame from "./SelectedFrame.svelte";
 import type { ArtboardSettings } from "../types/visualeditor";
+import Guides from "./Guides.svelte";
 export let artboardSettings: ArtboardSettings;
 
 function onDragStart(e) {
@@ -58,4 +57,5 @@ function onDragStart(e) {
     <ElementBase element="{element}" />
   {/each}
   <SelectedFrame />
+  <Guides />
 </div>

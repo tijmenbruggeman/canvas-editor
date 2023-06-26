@@ -6,14 +6,15 @@ import type {
   ArtboardSettings,
   DesignElement,
 } from "../types/visualeditor";
+import { GuideType, setGuides } from "./storeGuides";
 
 type EditAction = {
   type: string;
   attr: any;
 };
 
-type Selection = {
-  ids: Array<string>;
+export type SelectionSettings = {
+  id: string;
   x: number;
   y: number;
   width: number;
@@ -40,22 +41,14 @@ const defaultArtboard: ArtboardSettings = {
 const artboard = writable<ArtboardSettings>(defaultArtboard);
 const actions = writable<Array<EditAction>>([]);
 const elements = writable<Array<DesignElement>>([]);
-const selection = writable<Selection>(initalSelection);
-const guides = writable<Array<Guide>>([]);
-
-type Guide = {
-  display: boolean;
-  type: "center" | "edge";
-  orientation: "horizontal" | "vertical";
-  position: number;
-};
+const selection = writable<SelectionSettings>(initalSelection);
 
 let $elements: Array<DesignElement> = [];
 elements.subscribe((e) => {
   $elements = e;
 });
 
-let $selection: Selection = initalSelection;
+let $selection: SelectionSettings = initalSelection;
 selection.subscribe((e) => {
   $selection = e;
 });
@@ -63,20 +56,21 @@ selection.subscribe((e) => {
 let $artboard: ArtboardSettings = defaultArtboard;
 artboard.subscribe((newArtboard) => {
   $artboard = newArtboard;
+  setGuides(GuideType.artboard, newArtboard);
 });
 
 function commitAction(action: EditAction) {
   const [elementId] = $selection.ids;
   const elementIndex = $elements.findIndex(({ id }) => id === elementId);
   if (action.type === "move") {
-    return elements.update((e) => {
+    elements.update((e) => {
       e[elementIndex].x = action.attr.x;
       e[elementIndex].y = action.attr.y;
       return e;
     });
   }
   if (action.type === "transform") {
-    return elements.update((e) => {
+    elements.update((e) => {
       e[elementIndex].x = action.attr.x;
       e[elementIndex].y = action.attr.y;
       e[elementIndex].width = action.attr.width;
@@ -87,17 +81,18 @@ function commitAction(action: EditAction) {
   if (action.type === "add") {
     const existingElemnents = $elements;
     existingElemnents.push(action.attr);
-    return elements.set(existingElemnents);
+    elements.set(existingElemnents);
   }
   actions.update((a) => {
     a.push(action);
     return a;
   });
+  $elements.map((element) => setGuides(GuideType.element, element));
 }
 
 function clearSelected() {
   setToolbarType();
-  selection.set(initalSelection);
+  setSelected(initalSelection);
 }
 
 function editSelected() {
@@ -137,7 +132,6 @@ function startTransform() {
   return {
     transformSelection(params: TransformParams) {
       const { moveX, moveY, height, width } = scaleMovement(params);
-      console.log("check collision ");
       elements.update((e) => {
         // Currently multi-select is not possible
         // so no no need to update all elements
@@ -147,7 +141,7 @@ function startTransform() {
         e[elementIndex].height = currentElement.height + height;
         return e;
       });
-      selection.set({
+      setSelected({
         x: currentSelection.x + moveX,
         y: currentSelection.y + moveY,
         ids: currentSelection.ids,
@@ -184,10 +178,29 @@ function addElement({ width, type, height, src, artboard }: AddElementParams) {
     src,
     artboard,
   };
+
   commitAction({
     type: "add",
     attr: newElement,
   });
+}
+
+interface SetSelectedParams {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  ids: Array<string>;
+}
+function setSelected(selectedInput: SetSelectedParams) {
+  selection.set({
+    height: selectedInput.height,
+    width: selectedInput.width,
+    x: selectedInput.x,
+    y: selectedInput.y,
+    ids: selectedInput.ids,
+  });
+  setGuides(GuideType.selection, { ...selectedInput, id: "selection" });
 }
 
 export {
@@ -197,6 +210,7 @@ export {
   artboard,
   commitAction,
   clearSelected,
+  setSelected,
   editSelected,
   startTransform,
   addElement,

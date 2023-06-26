@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { v4 } from "uuid";
-import { artboard, elements } from "./storeEdits";
+import { artboard, commitAction } from "./storeEdits";
 
 import Workspace from "./Workspace.svelte";
 import type { Template } from "../types/visualeditor";
@@ -63,11 +63,15 @@ function loadTemplate(event: CustomEvent<{ template: string }>) {
   decodedTemplate.artboard.offsetX = offsetX;
   decodedTemplate.artboard.offsetY = 0;
   artboard.set(decodedTemplate.artboard);
-  const initialElements = decodedTemplate.elements.map((e) => ({
-    ...e,
-    id: v4(),
-  }));
-  elements.set(initialElements);
+  decodedTemplate.elements.forEach((e) => {
+    commitAction({
+      type: "add",
+      attr: {
+        ...e,
+        id: v4(),
+      },
+    });
+  });
 }
 window.addEventListener("pdc-loadtemplate", loadTemplate);
 </script>
