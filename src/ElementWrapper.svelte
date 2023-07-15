@@ -20,10 +20,7 @@ export let element: DesignElement;
 
 function selectElement() {
   setToolbarByElement(element.type);
-  setSelected({
-    ...element,
-    ids: [element.id],
-  });
+  setSelected(element);
 }
 
 $: styles = {

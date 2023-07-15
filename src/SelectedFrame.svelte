@@ -160,9 +160,8 @@ function onResizeStart(e, origin: TransformOrigins) {
     const change = transformDirection(e);
     transformSelection(change);
   }
-  function handleMouseUp(e) {
-    const change = transformDirection(e);
-    commitTransform(change);
+  function handleMouseUp() {
+    commitTransform();
     removeEventListener("mousemove", handleMouseMove);
     removeEventListener("mouseup", handleMouseUp);
   }

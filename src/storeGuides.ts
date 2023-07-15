@@ -32,32 +32,31 @@ export type Guide = {
 function generateArtboardGuides({
   height,
   width,
-  id,
 }: ArtboardSettings): Array<Guide> {
   // 4 guides for corners
   const guideLeft = {
-    id,
+    id: "artboard_vl",
     type: GuideType.artboard,
     orientation: GuideOrientation.vertical,
     position: 0,
   };
 
   const guideRight = {
-    id,
+    id: "artboard_vr",
     type: GuideType.artboard,
     orientation: GuideOrientation.vertical,
     position: width,
   };
 
   const guideTop = {
-    id,
+    id: "artboard_ht",
     type: GuideType.artboard,
     orientation: GuideOrientation.horizontal,
     position: 0,
   };
 
   const guideBottom = {
-    id,
+    id: "artboard_hb",
     type: GuideType.artboard,
     orientation: GuideOrientation.horizontal,
     position: height,
@@ -65,14 +64,15 @@ function generateArtboardGuides({
 
   // 2 center guides
   const guideCenterX = {
-    id,
+    id: "artboard_hc",
     type: GuideType.artboard,
     orientation: GuideOrientation.horizontal,
     position: height / 2,
+    display: true,
   };
 
   const guideCenterY = {
-    id,
+    id: "artboard_vc",
     type: GuideType.artboard,
     orientation: GuideOrientation.vertical,
     position: width / 2,
@@ -152,7 +152,6 @@ function generateSelectionGuides(input: SelectionSettings): Array<Guide> {
   return elementGuides.map((guide) => ({
     ...guide,
     type: GuideType.selection,
-    display: true,
   }));
 }
 
@@ -169,9 +168,8 @@ const guideFactory: { [index: string]: (input: any) => Array<Guide> } = {
 function setGuides(guideType: GuideType, guideInput: any): void {
   const newGuides = guideFactory[guideType](guideInput);
   const guidesWithoutType = get(guides).filter(
-    (guide) => guide.id !== guideInput.id
+    ({ id }) => id !== guideInput.id
   );
-  console.log("guidesWithoutType:", guidesWithoutType);
   guides.set([...guidesWithoutType, ...newGuides]);
 }
 
@@ -180,4 +178,20 @@ function clearGuides(type: GuideType) {
   guides.set(guidesWithoutType);
 }
 
-export { guides, setGuides, clearGuides };
+function getGuides(excludeId: string): Array<Guide> {
+  return get(guides).filter(({ id }) => id !== excludeId && id !== "selection");
+}
+
+function setActiveGuides(activeGuides: Array<Guide>) {
+  const activeIds = activeGuides.map(({ id }) => id);
+  guides.update((guides) => {
+    return guides.map((guide) => {
+      if (activeIds.includes(guide.id)) {
+        return { ...guide, display: true };
+      }
+      return { ...guide, display: false };
+    });
+  });
+}
+
+export { guides, setGuides, clearGuides, getGuides, setActiveGuides };

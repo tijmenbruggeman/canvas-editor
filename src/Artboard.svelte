@@ -34,12 +34,8 @@ function onDragStart(e) {
       y: moveY,
     });
   }
-  function handleMouseUp(e) {
-    const movedX = e.pageX - startX;
-    commitTransform({
-      x: movedX,
-      y: moveY,
-    });
+  function handleMouseUp() {
+    commitTransform();
     removeEventListener("mousemove", handleMouseMove);
     removeEventListener("mouseup", handleMouseUp);
   }

@@ -1,12 +1,19 @@
 import { v4 } from "uuid";
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { setToolbarType } from "./storeWorkspace";
 import type {
   AnyDesignElement,
   ArtboardSettings,
   DesignElement,
 } from "../types/visualeditor";
-import { GuideType, setGuides } from "./storeGuides";
+import {
+  GuideType,
+  clearGuides,
+  getGuides,
+  setActiveGuides,
+  setGuides,
+} from "./storeGuides";
+import { checkSnap } from "./utils/checkSnap";
 
 type EditAction = {
   type: string;
@@ -22,7 +29,7 @@ export type SelectionSettings = {
 };
 
 const initalSelection = {
-  ids: [],
+  id: "",
   x: 0,
   y: 0,
   width: 0,
@@ -56,11 +63,12 @@ selection.subscribe((e) => {
 let $artboard: ArtboardSettings = defaultArtboard;
 artboard.subscribe((newArtboard) => {
   $artboard = newArtboard;
+  clearGuides(GuideType.artboard);
   setGuides(GuideType.artboard, newArtboard);
 });
 
 function commitAction(action: EditAction) {
-  const [elementId] = $selection.ids;
+  const elementId = $selection.id;
   const elementIndex = $elements.findIndex(({ id }) => id === elementId);
   if (action.type === "move") {
     elements.update((e) => {
@@ -96,7 +104,7 @@ function clearSelected() {
 }
 
 function editSelected() {
-  const [elementId] = $selection.ids;
+  const elementId = $selection.id;
   const elementIndex = $elements.findIndex(({ id }) => id === elementId);
   return elements.update((e) => {
     e[elementIndex].mode = "edit";
@@ -126,37 +134,59 @@ function scaleValue(val: number, scale: number) {
 
 function startTransform() {
   const currentSelection = { ...$selection };
-  const [elementId] = currentSelection.ids;
-  const elementIndex = $elements.findIndex(({ id }) => id === elementId);
+  const elementIndex = $elements.findIndex(
+    ({ id }) => id === currentSelection.id
+  );
+  const guides = getGuides(currentSelection.id);
   const currentElement = { ...$elements[elementIndex] };
   return {
     transformSelection(params: TransformParams) {
-      const { moveX, moveY, height, width } = scaleMovement(params);
+      const {
+        moveX,
+        moveY,
+        height: transHeight,
+        width: transWidth,
+      } = scaleMovement(params);
+      const { x, y, width, height, activeGuides } = checkSnap({
+        currentPosition: {
+          x: currentElement.x,
+          y: currentElement.y,
+          width: currentElement.width,
+          height: currentElement.height,
+        },
+        transHeight,
+        transWidth,
+        moveX,
+        moveY,
+        guides,
+      });
+      setActiveGuides(activeGuides);
       elements.update((e) => {
         // Currently multi-select is not possible
         // so no no need to update all elements
-        e[elementIndex].x = currentElement.x + moveX;
-        e[elementIndex].y = currentElement.y + moveY;
-        e[elementIndex].width = currentElement.width + width;
-        e[elementIndex].height = currentElement.height + height;
+        e[elementIndex].x = x;
+        e[elementIndex].y = y;
+        e[elementIndex].width = width;
+        e[elementIndex].height = height;
         return e;
       });
       setSelected({
-        x: currentSelection.x + moveX,
-        y: currentSelection.y + moveY,
-        ids: currentSelection.ids,
-        width: currentSelection.width + width,
-        height: currentSelection.height + height,
+        x,
+        y,
+        id: currentSelection.id,
+        width,
+        height,
       });
     },
-    commitTransform(params: TransformParams) {
-      const { moveX, moveY, height, width } = scaleMovement(params);
+    commitTransform() {
+      const { height, x, y, width } = get(selection);
+      setActiveGuides([]);
       commitAction({
         attr: {
-          x: currentElement.x + moveX,
-          y: currentElement.y + moveY,
-          width: currentElement.width + width,
-          height: currentElement.height + height,
+          x,
+          y,
+          width,
+          height,
         },
         type: "transform",
       });
@@ -190,7 +220,7 @@ interface SetSelectedParams {
   y: number;
   width: number;
   height: number;
-  ids: Array<string>;
+  id: string;
 }
 function setSelected(selectedInput: SetSelectedParams) {
   selection.set({
@@ -198,7 +228,7 @@ function setSelected(selectedInput: SetSelectedParams) {
     width: selectedInput.width,
     x: selectedInput.x,
     y: selectedInput.y,
-    ids: selectedInput.ids,
+    id: selectedInput.id,
   });
   setGuides(GuideType.selection, { ...selectedInput, id: "selection" });
 }
